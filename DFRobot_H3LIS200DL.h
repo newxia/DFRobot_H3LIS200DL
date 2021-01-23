@@ -1,0 +1,311 @@
+/*!
+ * @file DFRobot_H3LIS200DL.h
+ * @brief Define the basic structure of class DFRobot_H3LIS200DL 
+ * @copyright   Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
+ * @licence     The MIT License (MIT)
+ * @author [fengli](li.feng@dfrobot.com)
+ * @version  V1.0
+ * @date  2020-12-23
+ * @get from https://www.dfrobot.com
+ * @https://github.com/DFRobot/DFRobot_H3LIS200DL
+ */
+
+#ifndef DFROBOT_H3LIS200DL_H
+#define DFROBOT_H3LIS200DL_H
+#if ARDUINO >= 100
+ #include "Arduino.h"
+#else
+ #include "WProgram.h"
+#endif
+#include <Wire.h>
+#include <SPI.h>
+#define ENABLE_DBG
+
+#ifdef ENABLE_DBG
+#define DBG(...) {Serial.print("["); Serial.print(__FUNCTION__); Serial.print("(): "); Serial.print(__LINE__); Serial.print(" ] "); Serial.println(__VA_ARGS__);}
+#else
+#define DBG(...)
+#endif
+
+#define H3LIS200DL_I2C_ADDR  (0x19)  /*sensor IIC address*/
+
+//#define ERR_OK             0      //ok
+//#define ERR_DATA_BUS      -1      //error in data bus
+//#define ERR_IC_VERSION    -2      //chip version mismatch
+
+
+class DFRobot_H3LIS200DL
+{
+  #define H3LIS200DL_REG_CARD_ID    0x0F     /*Chip id*/
+  #define H3LIS200DL_REG_CTRL_REG1  0x20     /*Control register 1*/
+  #define H3LIS200DL_REG_CTRL_REG4  0x23     /*Control register 4*/
+  #define H3LIS200DL_REG_CTRL_REG2  0x21     /*Control register 2*/
+  #define H3LIS200DL_REG_CTRL_REG3  0x22     /*Control register 3*/
+  #define H3LIS200DL_REG_CTRL_REG5  0x24     /*Control register 5*/
+  #define H3LIS200DL_REG_CTRL_REG6  0x25     /*Control register 6*/
+  #define H3LIS200DL_REG_STATUS_REG 0x27     /*Status register*/
+  #define H3LIS200DL_REG_OUT_X      0x29     /*Acceleration register*/
+  #define H3LIS200DL_REG_OUT_Y      0x2B     /*Acceleration register*/
+  #define H3LIS200DL_REG_OUT_Z      0x2D     /*Acceleration register*/
+  #define H3LIS200DL_REG_INT1_THS   0x32     /*Interrupt source 1 threshold*/
+  #define H3LIS200DL_REG_INT2_THS   0x36     /*Interrupt source 2 threshold*/
+  #define H3LIS200DL_REG_INT1_CFG   0x30     /*Interrupt source 1 configuration register*/
+  #define H3LIS200DL_REG_INT2_CFG   0x34     /*Interrupt source 2 configuration register*/
+  #define H3LIS200DL_REG_INT1_SRC   0x31     /*Interrupt source 1 status register*/
+  #define H3LIS200DL_REG_INT2_SRC   0x35     /*Interrupt source 2 status register*/
+
+public:
+
+/**
+  Power mode selection, determine the frequency of data collection
+*/
+typedef enum{
+   ePowerDown = 0,
+   eLowPower_halfHZ,
+   eLowPower_1HZ,
+   eLowPower_2HZ,
+   eLowPower_5HZ,
+   eLowPower_10HZ,
+   eNormal_50HZ,
+   eNormal_100HZ,
+   eNormal_400HZ,
+   eNormal_1000HZ,
+}ePowerMode_t;
+
+/**
+  Sensor range selection
+*/
+typedef enum{
+  eOnehundred,/**< ±100g>*/
+  eTwohundred/**< ±200g>*/
+}eRange_t;
+
+/**
+  Filtering mode
+*/
+typedef enum{
+  eCutoffMode1 = 0,
+  eCutoffMode2,
+  eCutoffMode3,
+  eCutoffMode4,
+  eShutDown,
+}eHighPassFilter_t;
+
+/**
+  Interrupt event
+*/
+typedef enum{
+  eXLowThanTh = 0,/**<The acceleration in the x direction is less than the threshold>*/
+  eXhigherThanTh ,/**<The acceleration in the x direction is greater than the threshold>*/
+  eYLowThanTh,/**<The acceleration in the y direction is less than the threshold>*/
+  eYhigherThanTh,/**<The acceleration in the y direction is greater than the threshold>*/
+  eZLowThanTh,/**<The acceleration in the z direction is less than the threshold>*/
+  eZhigherThanTh,/**<The acceleration in the z direction is greater than the threshold>*/
+  eEventError,/**< No event>*/
+}eInterruptEvent_t;
+
+/**
+  Interrupt pin selection
+*/
+typedef enum{
+  eINT1 = 0,/**<int1 >*/
+  eINT2,/**<int2>*/
+}eInterruptSource_t;
+
+/**
+  Store acceleration in three directions
+*/
+typedef struct
+{
+ float acceleration_x;/**<acceleration in x direction(g)>*/
+ float acceleration_y;/**<acceleration in y direction(g)>*/
+ float acceleration_z;/**<acceleration in z direction(g)>*/
+}sAccel_t;
+
+public:
+  DFRobot_H3LIS200DL();
+  /**
+   * @brief Initialize the function
+   * @return Return 0 indicates a successful initialization, while other values indicates failure and return to error code.
+   */
+  int begin(void);
+ 
+  /**
+   * @brief Get chip id
+   * @return Returns the eight-digit serial number
+   */
+  uint8_t getID();
+  
+  /**
+   * @brief Enable interrupt
+   * @param source:Interrupt pin selection
+   * @param event:Interrupt event selection
+   */
+  void enableInterruptEvent(eInterruptSource_t source, eInterruptEvent_t event);
+  
+  /**
+   * @brief Set the measurement range
+   * @param range:Range(g)
+            eOnehundred =  ±100g
+            eTwohundred = ±200g
+   */
+  void setRange(eRange_t range);
+  
+  /**
+   * @brief Set data measurement rate
+   * @param range:rate(g)
+   */
+  void setAcquireRate(ePowerMode_t rate);
+  
+  /**
+   * @brief Set data filtering mode
+   * @param mode:Four modes
+                 eCutoffMode1 = 0,
+                 eCutoffMode2,
+                 eCutoffMode3,
+                 eCutoffMode4,
+                 eShutDown,
+   */
+  void setHFilterMode(eHighPassFilter_t mode);
+
+  /**
+   * @brief Set the threshold of interrupt source 1 interrupt
+   * @param threshold:Threshold(g)
+   */
+  void setIntOneTh(uint8_t threshold);//0 - 100 / 0 - 200 
+
+  /**
+   * @brief Set interrupt source 2 interrupt generation threshold
+   * @param threshold:Threshold(g)
+   */
+  void setIntTwoTh(uint8_t threshold);//0 - 100 / 0 - 200 
+
+  /**
+   * @brief Enable sleep wake function
+   * @param enable:true\false
+   * @return 0
+   */
+  int enableSleep(bool enable);
+  
+  /**
+   * @brief Get the acceleration in the three directions of xyz
+   * @return Three-axis acceleration 
+             acceleration_x;
+             acceleration_y;
+             acceleration_z;
+   */
+  sAccel_t getAcceFromXYZ();
+
+  /**
+   * @brief Check whether the interrupt event'source' is generated in interrupt 1
+   * @param source:中断事件
+                   eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
+                   eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
+                   eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
+                   eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
+                   eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
+                   eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
+   * @return true ：产生
+             false：未产生
+   */
+  bool getInt1Event(eInterruptEvent_t source);
+
+  /**
+   * @brief Check whether the interrupt event'source' is generated in interrupt 2
+   * @param source:中断事件
+                   eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
+                   eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
+                   eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
+                   eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
+                   eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
+                   eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
+   * @return true ：产生
+             false：未产生
+   */
+  bool getInt2Event(eInterruptEvent_t source);
+  
+protected:
+  uint8_t _interface = 0;
+  uint8_t reset = 0;
+  uint8_t _range = 100;
+  void enableXYZ();
+    bool getDataFlag();
+    int readACCFromX();
+    int readACCFromY();
+    int readACCFromZ();
+  virtual uint8_t readReg(uint8_t reg,uint8_t * pBuf ,size_t size) = 0;
+  /**
+   * @brief Write command into sensor chip 
+   * @param reg  
+   * @param data  Data included in command
+   * @param size  The number of the byte of command
+   */
+  virtual uint8_t  writeReg(uint8_t reg,const void *pBuf,size_t size)= 0; 
+};
+
+
+
+class DFRobot_H3LIS200DL_I2C : public DFRobot_H3LIS200DL{
+public:
+  /*!
+   * @brief Constructor 
+   * @param pWire I2c controller
+   * @param addr  I2C address(0x64/0x65/0x660x67)
+   */
+  DFRobot_H3LIS200DL_I2C(TwoWire * pWire = &Wire,uint8_t addr = H3LIS200DL_I2C_ADDR);
+  /**
+   * @brief init function
+   * @return Return 1 if initialization succeeds, otherwise return non-zero and error code.
+   */
+  int begin(void);
+private:
+
+  /**
+   * @brief Write command into sensor chip 
+   * @param 
+   * @param data  Data included in command
+   * @param size  The number of the byte of command
+   */
+    uint8_t readReg(uint8_t reg,uint8_t * pBuf ,size_t size);
+  /**
+   * @brief Write command into sensor chip 
+   * @param reg  
+   * @param data  Data included in command
+   * @param size  The number of the byte of command
+   */
+    uint8_t  writeReg(uint8_t reg,const void *pBuf,size_t size); 
+    uint8_t _deviceAddr;
+    TwoWire *_pWire;
+};
+class DFRobot_H3LIS200DL_SPI : public DFRobot_H3LIS200DL{
+
+public:
+  DFRobot_H3LIS200DL_SPI(uint8_t cs,SPIClass *spi=&SPI);
+  
+  /**
+   * @brief init function
+   * @return Return 1 if initialization succeeds, otherwise return non-zero and error code.
+   */
+  int begin(void);
+protected:
+
+  /**
+   * @brief Write command into sensor chip 
+   * @param 
+   * @param data  Data included in command
+   * @param size  The number of the byte of command
+   */
+    uint8_t readReg(uint8_t reg,uint8_t * pBuf ,size_t size);
+  /**
+   * @brief Write command into sensor chip 
+   * @param reg  
+   * @param data  Data included in command
+   * @param size  The number of the byte of command
+   */
+    uint8_t  writeReg(uint8_t reg,const void *pBuf,size_t size); 
+private:
+    SPIClass *_pSpi;
+    uint8_t _cs;
+};
+
+#endif
