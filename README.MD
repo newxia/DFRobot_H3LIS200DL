@@ -1,4 +1,4 @@
-# HX711-Arduino
+# DFRobot_H3LIS200DL
 The H3LIS200DL is a low-power high performance 3-axis linear accelerometer <br>
 belonging to the “nano” family, with digital I2C/SPI <br>
 serial interface standard output. <br>
@@ -17,7 +17,7 @@ temperature range from -40 °C to +85 °C.<br>
 ## DFRobot_H3LIS200DL Library for Arduino
 ---------------------------------------------------------
 
-Provide an Arduino library to get weight by reading data from HX711.
+Provide an Arduino library to get Three-axis acceleration by reading data from H3LIS200DL.
 
 ## Table of Contents
 
@@ -90,13 +90,13 @@ To use this library, first download the library file, paste it into the \Arduino
    * @brief Set the threshold of interrupt source 1 interrupt
    * @param threshold:Threshold(g)
    */
-  void setIntOneTh(uint8_t threshold);//0 - 100 / 0 - 200 
+  void setIntOneTh(uint8_t threshold);
 
   /**
    * @brief Set interrupt source 2 interrupt generation threshold
    * @param threshold:Threshold(g)
    */
-  void setIntTwoTh(uint8_t threshold);//0 - 100 / 0 - 200 
+  void setIntTwoTh(uint8_t threshold);
 
   /**
    * @brief Enable sleep wake function
@@ -116,32 +116,31 @@ To use this library, first download the library file, paste it into the \Arduino
 
   /**
    * @brief Check whether the interrupt event'source' is generated in interrupt 1
-   * @param source:中断事件
+   * @param source:Interrupt event
                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
                    eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
                    eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
                    eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
-   * @return true ：产生
-             false：未产生
+   * @return true ：produce
+             false：Interrupt event
    */
   bool getInt1Event(eInterruptEvent_t source);
 
   /**
    * @brief Check whether the interrupt event'source' is generated in interrupt 2
-   * @param source:中断事件
+   * @param source:Interrupt event
                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
                    eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
                    eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
                    eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
-   * @return true ：产生
-             false：未产生
+   * @return true ：produce
+             false：Interrupt event
    */
   bool getInt2Event(eInterruptEvent_t source);
-
 
 ```
 
