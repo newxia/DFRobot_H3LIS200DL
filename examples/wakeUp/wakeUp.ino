@@ -1,8 +1,7 @@
 /**！
  * @file wakeUp.ino
  * @brief Use sleep wakeup function
-   @n when the sensor is in low power consumption mode, when an interrupt is generated, 
-   @n the sensor will work in normal mode
+   @n when the sensor is in low power consumption mode, when an interrupt is generated, the sensor will work in normal mode
  * @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [fengli](li.feng@dfrobot.com)
@@ -13,9 +12,9 @@
  */
 
 #include <DFRobot_H3LIS200DL.h>
+
 #if defined(ESP32) || defined(ESP8266)
 #define H3LIS200DL_CS  D5
-
 /* AVR series mainboard */
 #else
 #define H3LIS200DL_CS 3
@@ -38,13 +37,18 @@ void setup(void){
   //Get chip id
   Serial.print("chip id : ");
   Serial.println(acce.getID(),HEX);
-  // set range:Range(g)
-  //         eOnehundred =  ±100g
-  //         eTwohundred = ±200g
-  acce.setRange(DFRobot_H3LIS200DL::eOnehundred);
+  
+  /**
+    set range:Range(g)
+              eOnehundred ,/<±100g>/
+              eTwohundred ,/<±200g>/
+  */
+  acce.setRange(/*Range = */DFRobot_H3LIS200DL::eOnehundred);
 
   /**
-    Set data measurement rate：
+   “sleep to wake-up”  need to put the chip in low power mode first
+   Set data measurement rate：
+   
       ePowerDown = 0,
       eLowPower_halfHZ,
       eLowPower_1HZ,
@@ -56,13 +60,13 @@ void setup(void){
       eNormal_400HZ,
       eNormal_1000HZ,
   */
-  acce.setAcquireRate(DFRobot_H3LIS200DL::eLowPower_halfHZ);
-
+  acce.setAcquireRate(/*Rate = */DFRobot_H3LIS200DL::eLowPower_halfHZ);
+  
   /**
     Set the threshold of interrupt source 1 interrupt
     threshold:Threshold(g)
    */
-  acce.setIntOneTh(6);//0 - 100 / 0 - 200 
+  acce.setIntOneTh(/*Threshold = */6);
   //Enable sleep wake function
   acce.enableSleep(true);
   
@@ -79,7 +83,7 @@ void setup(void){
                    eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
                    eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
    */
-  acce.enableInterruptEvent(DFRobot_H3LIS200DL::eINT1,DFRobot_H3LIS200DL::eZhigherThanTh);
+  acce.enableInterruptEvent(/*int pin*/DFRobot_H3LIS200DL::eINT1,/*interrupt = */DFRobot_H3LIS200DL::eZhigherThanTh);
   
   delay(1000);
 }

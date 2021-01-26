@@ -58,10 +58,11 @@ public:
 
 /**
   Power mode selection, determine the frequency of data collection
+  Represents the number of data collected per second
 */
 typedef enum{
    ePowerDown = 0,
-   eLowPower_halfHZ,
+   eLowPower_halfHZ,/*0.5 hz*/
    eLowPower_1HZ,
    eLowPower_2HZ,
    eLowPower_5HZ,
@@ -80,9 +81,22 @@ typedef enum{
   eTwohundred/**< ±200g>*/
 }eRange_t;
 
-/**
-  Filtering mode
-*/
+/*!     High-pass filter cut-off frequency configuration
+ * ---------------------------------------------------------------------------------------
+ * |-------------------------------------------------------------|
+ * |                |    ft [Hz]      |        ft [Hz]       |       ft [Hz]        |        ft [Hz]        |
+ * |   mode         |Data rate = 50 Hz|   Data rate = 100 Hz |  Data rate = 400 Hz  |   Data rate = 1000 Hz |
+ * |--------------------------------------------------------------------------------------------------------|
+ * |  eCutoffMode1  |     1           |         2            |            8         |             20        |
+ * |--------------------------------------------------------------------------------------------------------|
+ * |  eCutoffMode1  |    0.5          |         1            |            4         |             10        |
+ * |--------------------------------------------------------------------------------------------------------|
+ * |  eCutoffMode1  |    0.25         |         0.5          |            2         |             5         |
+ * |--------------------------------------------------------------------------------------------------------|
+ * |  eCutoffMode1  |    0.125        |         0.25         |            1         |             2.5       |
+ * |--------------------------------------------------------------------------------------------------------|
+ * |--------------------------------------------------------------------------------------------------------|
+ */
 typedef enum{
   eCutoffMode1 = 0,
   eCutoffMode2,
@@ -172,13 +186,13 @@ public:
    * @brief Set the threshold of interrupt source 1 interrupt
    * @param threshold:Threshold(g)
    */
-  void setIntOneTh(uint8_t threshold);//0 - 100 / 0 - 200 
+  void setIntOneTh(uint8_t threshold);
 
   /**
    * @brief Set interrupt source 2 interrupt generation threshold
    * @param threshold:Threshold(g)
    */
-  void setIntTwoTh(uint8_t threshold);//0 - 100 / 0 - 200 
+  void setIntTwoTh(uint8_t threshold);
 
   /**
    * @brief Enable sleep wake function
@@ -198,29 +212,29 @@ public:
 
   /**
    * @brief Check whether the interrupt event'source' is generated in interrupt 1
-   * @param source:中断事件
+   * @param source:Interrupt event
                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
                    eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
                    eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
                    eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
-   * @return true ：产生
-             false：未产生
+   * @return true ：produce
+             false：Interrupt event
    */
   bool getInt1Event(eInterruptEvent_t source);
 
   /**
    * @brief Check whether the interrupt event'source' is generated in interrupt 2
-   * @param source:中断事件
+   * @param source:Interrupt event
                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
                    eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
                    eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
                    eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
-   * @return true ：产生
-             false：未产生
+   * @return true ：produce
+             false：Interrupt event
    */
   bool getInt2Event(eInterruptEvent_t source);
   

@@ -28,12 +28,17 @@
  * @param spi :SPI controller
  */
 //DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
-
+/*!
+ * @brief Constructor 
+ * @param pWire I2c controller
+ * @param addr  I2C address(0x19/0x18)
+ */
 DFRobot_H3LIS200DL_I2C acce;
 volatile int Flag = 0;
 void interEvent(){
   Flag = 1;
 }
+
 void setup(void){
 
   Serial.begin(9600);
@@ -44,10 +49,13 @@ void setup(void){
   //Get chip id
   Serial.print("chip id : ");
   Serial.println(acce.getID(),HEX);
-  // set range:Range(g)
-  //         eOnehundred =  ±100g
-  //         eTwohundred = ±200g
-  acce.setRange(DFRobot_H3LIS200DL::eOnehundred);
+  
+  /**
+    set range:Range(g)
+              eOnehundred ,/<±100g>/
+              eTwohundred ,/<±200g>/
+  */
+  acce.setRange(/*Range = */DFRobot_H3LIS200DL::eOnehundred);
 
   /**
     Set data measurement rate：
@@ -62,15 +70,49 @@ void setup(void){
       eNormal_400HZ,
       eNormal_1000HZ,
   */
-  acce.setAcquireRate(DFRobot_H3LIS200DL::eNormal_50HZ);
-  //External interrupt setting
-  attachInterrupt(0,interEvent, CHANGE);
+  acce.setAcquireRate(/*Rate = */DFRobot_H3LIS200DL::eNormal_50HZ);
+  #ifdef ARDUINO_ARCH_MPYTHON 
+  /*                    The Correspondence Table of ESP32 Interrupt Pins And Terminal Numbers
+   * -----------------------------------------------------------------------------------------------------
+   * |            |  DigitalPin  | P0-P20 can be used as an external interrupt                           |
+   * |    esp32   |--------------------------------------------------------------------------------------|
+   * |            | Interrupt No |  DigitalPinToInterrupt (Pn) can be used to query the interrupt number |
+   * |---------------------------------------------------------------------------------------------------|
+   */
+  attachInterrupt(digitalPinToInterrupt(P16)/*Query the interrupt number of the P16 pin*/,interEvent,CHANGE);
+  //Open esp32's P16 pin for external interrupt, bilateral edge trigger, INT1/2 connected to P16
+  #else
+  /*    The Correspondence Table of AVR Series Arduino Interrupt Pins And Terminal Numbers
+   * ---------------------------------------------------------------------------------------
+   * |                                        |  DigitalPin  | 2  | 3  |                   |
+   * |    Uno, Nano, Mini, other 328-based    |--------------------------------------------|
+   * |                                        | Interrupt No | 0  | 1  |                   |
+   * |-------------------------------------------------------------------------------------|
+   * |                                        |    Pin       | 2  | 3  | 21 | 20 | 19 | 18 |
+   * |               Mega2560                 |--------------------------------------------|
+   * |                                        | Interrupt No | 0  | 1  | 2  | 3  | 4  | 5  |
+   * |-------------------------------------------------------------------------------------|
+   * |                                        |    Pin       | 3  | 2  | 0  | 1  | 7  |    |
+   * |    Leonardo, other 32u4-based          |--------------------------------------------|
+   * |                                        | Interrupt No | 0  | 1  | 2  | 3  | 4  |    |
+   * |--------------------------------------------------------------------------------------
+   */
+  /*                      The Correspondence Table of micro:bit Interrupt Pins And Terminal Numbers
+   * ---------------------------------------------------------------------------------------------------------------------------------------------
+   * |             micro:bit                       | DigitalPin |P0-P20 can be used as an external interrupt                                     |
+   * |  (When using as an external interrupt,      |---------------------------------------------------------------------------------------------|
+   * |no need to set it to input mode with pinMode)|Interrupt No|Interrupt number is a pin digital value, such as P0 interrupt number 0, P1 is 1 |
+   * |-------------------------------------------------------------------------------------------------------------------------------------------|
+   */
+  attachInterrupt(/*Interrupt No*/0,interEvent,CHANGE);//Open the external interrupt 0, connect INT1/2 to the digital pin of the main control: 
+     //UNO(2), Mega2560(2), Leonardo(3), microbit(P0).
+  #endif
 
   /**
     Set the threshold of interrupt source 1 interrupt
     threshold:Threshold(g)
    */
-  acce.setIntOneTh(10);//0 - 100 / 0 - 200 
+  acce.setIntOneTh(/*Threshold = */10);//单位为:g
 
   /**
    * @brief Enable interrupt
@@ -85,7 +127,7 @@ void setup(void){
                    eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
                    eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
    */
-  acce.enableInterruptEvent(DFRobot_H3LIS200DL::eINT1,DFRobot_H3LIS200DL::eZhigherThanTh);
+  acce.enableInterruptEvent(/*int pin*/DFRobot_H3LIS200DL::eINT1,/*interrupt = */DFRobot_H3LIS200DL::eZhigherThanTh);
   
   delay(1000);
 }
@@ -106,14 +148,14 @@ void loop(void){
       Serial.println("Flag = 1");
       //Check whether the interrupt event'source' is generated in interrupt 1
       if(acce.getInt1Event(DFRobot_H3LIS200DL::eYhigherThanTh)){
-        Serial.println("YH");
-	  }
+        Serial.println("The acceleration in the y direction is greater than the threshold");
+      }
      if(acce.getInt1Event(DFRobot_H3LIS200DL::eZhigherThanTh)){
-       Serial.println("ZH");
-	  }
+       Serial.println("The acceleration in the z direction is greater than the threshold");
+      }
       if(acce.getInt1Event(DFRobot_H3LIS200DL::eXhigherThanTh)){
-        Serial.println("XH");
-	  }
+        Serial.println("The acceleration in the x direction is greater than the threshold");
+      }
       Flag = 0;
    }
 }

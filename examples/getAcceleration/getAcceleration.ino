@@ -40,10 +40,13 @@ void setup(void){
   //Get chip id
   Serial.print("chip id : ");
   Serial.println(acce.getID(),HEX);
-  // set range:Range(g)
-  //         eOnehundred =  ±100g
-  //         eTwohundred = ±200g
-  acce.setRange(DFRobot_H3LIS200DL::eOnehundred);
+  /**
+    Set data measurement rate：
+    set range:Range(g)
+              eOnehundred ,/<±100g>/
+              eTwohundred ,/<±200g>/
+  */
+  acce.setRange(/*Range = */DFRobot_H3LIS200DL::eOnehundred);
 
   /**
     Set data measurement rate：
@@ -58,7 +61,7 @@ void setup(void){
       eNormal_400HZ,
       eNormal_1000HZ,
   */
-  acce.setAcquireRate(DFRobot_H3LIS200DL::eNormal_50HZ);
+  acce.setAcquireRate(/*Rate = */DFRobot_H3LIS200DL::eNormal_50HZ);
   delay(1000);
 }
 
