@@ -40,8 +40,8 @@ void setup(void){
   //Get chip id
   Serial.print("chip id : ");
   Serial.println(acce.getID(),HEX);
+  
   /**
-    Set data measurement rate：
     set range:Range(g)
               eOnehundred ,/<±100g>/
               eTwohundred ,/<±200g>/
