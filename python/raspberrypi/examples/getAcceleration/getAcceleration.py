@@ -23,27 +23,22 @@ RASPBERRY_PIN_CS = 27
 I2C_MODE         = 0x01            # default use I2C1
 ADDRESS_0        = 0x19
 
-#acce = DFRobot_H3LIS200DL_SPI(RASPBERRY_SPI_BUS,RASPBERRY_PIN_CS)
+acce = DFRobot_H3LIS200DL_SPI(RASPBERRY_SPI_BUS,RASPBERRY_PIN_CS)
 #
-acce = DFRobot_H3LIS200DL_I2C(I2C_MODE ,ADDRESS_0)
+#acce = DFRobot_H3LIS200DL_I2C(I2C_MODE ,ADDRESS_0)
 # clear screen
 acce.begin()
 print("chip id :")
-#获取芯片id
+
 print(acce.getID())
-#time.sleep(1)
-#设置测量量程
 acce.setRange(acce.E_ONE_HUNDRED)
-#设置数据采集频率
 acce.setAcquireRate(acce.E_NORMAL_50HZ)
-time.sleep(1000)
+time.sleep(0.1)
 
 while True:
     #获取三个方向上的加速度数据
-    x = acce.readACCFromX()
-    y = acce.readACCFromy()
-    z = acce.readACCFromZ()
-    time.sleep(300)
+    x,y,z = acce.readAcceFromXYZ()
+    time.sleep(1)
     
     
-    print("Acceleration [X = %.2f mg,Y = %.2f mg,Z = %.2f mg]"%(x,y,z))
+    print("Acceleration [X = %.2d g,Y = %.2d g,Z = %.2d g]"%(x,y,z))
