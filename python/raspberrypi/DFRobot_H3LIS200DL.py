@@ -66,10 +66,10 @@ class DFRobot_H3LIS200DL(object):
   __uart_i2c     =  0
   __range = 100
   __reset = 0
-'''
-  Power mode selection, determine the frequency of data collection
-  Represents the number of data collected per second
-'''
+  '''
+    Power mode selection, determine the frequency of data collection
+    Represents the number of data collected per second
+  '''
   E_POWER_DOWN = 0
   E_LOWPOWER_HALFHZ = 1 
   E_LOWPOWER_1HZ = 2
@@ -85,23 +85,23 @@ class DFRobot_H3LIS200DL(object):
   E_ONE_HUNDRED =0#/**< ±100g>*/
   E_TWO_HUNDRED = 1#/**< ±200g>*/
 
-'''
-     High-pass filter cut-off frequency configuration
----------------------------------------------------------------------------------------
-|-------------------------------------------------------------|
-|                |    ft [Hz]      |        ft [Hz]       |       ft [Hz]        |        ft [Hz]        |
-|   mode         |Data rate = 50 Hz|   Data rate = 100 Hz |  Data rate = 400 Hz  |   Data rate = 1000 Hz |
-|--------------------------------------------------------------------------------------------------------|
-|  eCutoffMode1  |     1           |         2            |            8         |             20        |
-|--------------------------------------------------------------------------------------------------------|
-|  eCutoffMode1  |    0.5          |         1            |            4         |             10        |
-|--------------------------------------------------------------------------------------------------------|
-|  eCutoffMode1  |    0.25         |         0.5          |            2         |             5         |
-|--------------------------------------------------------------------------------------------------------|
-|  eCutoffMode1  |    0.125        |         0.25         |            1         |             2.5       |
-|--------------------------------------------------------------------------------------------------------|
-|--------------------------------------------------------------------------------------------------------|
-'''
+  '''
+       High-pass filter cut-off frequency configuration
+  ---------------------------------------------------------------------------------------
+  |-------------------------------------------------------------|
+  |                |    ft [Hz]      |        ft [Hz]       |       ft [Hz]        |        ft [Hz]        |
+  |   mode         |Data rate = 50 Hz|   Data rate = 100 Hz |  Data rate = 400 Hz  |   Data rate = 1000 Hz |
+  |--------------------------------------------------------------------------------------------------------|
+  |  eCutoffMode1  |     1           |         2            |            8         |             20        |
+  |--------------------------------------------------------------------------------------------------------|
+  |  eCutoffMode1  |    0.5          |         1            |            4         |             10        |
+  |--------------------------------------------------------------------------------------------------------|
+  |  eCutoffMode1  |    0.25         |         0.5          |            2         |             5         |
+  |--------------------------------------------------------------------------------------------------------|
+  |  eCutoffMode1  |    0.125        |         0.25         |            1         |             2.5       |
+  |--------------------------------------------------------------------------------------------------------|
+  |--------------------------------------------------------------------------------------------------------|
+  '''
   E_CUTOFF_MODE1 = 0
   E_CUTOFF_MODE2 = 1
   E_CUTOFF_MODE3 = 2
@@ -142,10 +142,10 @@ class DFRobot_H3LIS200DL(object):
       identifier = self.read_reg(self.H3LIS200DL_REG_CARD_ID + 0x80)  
     else:
       identifier = self.read_reg(self.H3LIS200DL_REG_CARD_ID)
-    print(identifier)
+    #print(identifier)
     if identifier == 0x32:
-      print("identifier = :")
-      print(identifier)
+      #print("identifier = :")
+      #print(identifier)
       return 0
     else:
       return 1
@@ -193,7 +193,7 @@ class DFRobot_H3LIS200DL(object):
       regester  = self.H3LIS200DL_REG_CTRL_REG1 | 0x80;
     
     reg = self.read_reg(regester)
-    print(reg);
+    #print(reg);
     if rate == self.E_POWER_DOWN:
       reg = reg & (~(0x7 << 5))
     elif rate == self.E_LOWPOWER_HALFHZ:
@@ -457,13 +457,13 @@ class DFRobot_H3LIS200DL_I2C(DFRobot_H3LIS200DL):
 class DFRobot_H3LIS200DL_SPI(DFRobot_H3LIS200DL): 
 
 
-  def __init__(self ,bus,cs):
+  def __init__(self ,cs):
     super(DFRobot_H3LIS200DL_SPI, self).__init__(0,cs)
     #DFRobot_H3LIS200DL.__init__(0,0)
     #self._busy = GPIO(busy, GPIO.IN)
     self.__cs = GPIO(cs, GPIO.OUT)
     self.__cs.setOut(GPIO.LOW)
-    self._spi = SPI(bus, 0)
+    self._spi = SPI(0, 0)
 
     
   '''
@@ -489,5 +489,5 @@ class DFRobot_H3LIS200DL_SPI(DFRobot_H3LIS200DL):
      time.sleep(0.01);
      data = self._spi.readData(1);
      self.__cs.setOut(GPIO.HIGH)
-     print(data)
+     #print(data)
      return  data[0]

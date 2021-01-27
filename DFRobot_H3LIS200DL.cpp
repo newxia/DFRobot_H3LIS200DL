@@ -434,7 +434,7 @@ uint8_t DFRobot_H3LIS200DL_I2C::readReg(uint8_t reg, uint8_t* pBuf, size_t size)
   for(uint16_t i = 0; i < size; i++){
 	  
     _pBuf[i] = _pWire->read();
-	//Serial.println(_pBuf[i],HEX);
+	Serial.println(_pBuf[i],HEX);
 	  DBG(_pBuf[i]);
   }
   return size;

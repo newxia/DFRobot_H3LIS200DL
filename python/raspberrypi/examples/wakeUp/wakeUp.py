@@ -22,9 +22,9 @@ import time
 RASPBERRY_PIN_CS = 27              #Chip selection pin
 I2C_MODE         = 0x01            # default use I2C1
 ADDRESS_0        = 0x19
-acce = DFRobot_H3LIS200DL_SPI(RASPBERRY_SPI_BUS,RASPBERRY_PIN_CS)
+#acce = DFRobot_H3LIS200DL_SPI(RASPBERRY_PIN_CS)
 #
-#acce = DFRobot_H3LIS200DL_I2C(I2C_MODE ,ADDRESS_0)
+acce = DFRobot_H3LIS200DL_I2C(I2C_MODE ,ADDRESS_0)
 # clear screen
 acce.begin()
 print("chip id :")
@@ -38,7 +38,7 @@ print(acce.getID())
 acce.setRange(acce.E_ONE_HUNDRED)
 
 '''
-    Set data measurement rateï¼š
+    Set data measurement rateï¼?
            E_POWER_DOWN 
            E_LOWPOWER_HALFHZ 
            E_LOWPOWER_1HZ 
