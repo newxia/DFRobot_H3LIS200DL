@@ -469,14 +469,15 @@ uint8_t DFRobot_H3LIS200DL_SPI::readReg(uint8_t reg,uint8_t * pBuf ,size_t size)
   }
   uint8_t * _pBuf = (uint8_t *)pBuf;
   size_t count = 0;
-  digitalWrite(_cs,0);
   _pSpi->beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+  digitalWrite(_cs,0);
   _pSpi->transfer(reg);
   while(size--) {
-    *_pBuf = SPI.transfer(0xFF);
+    *_pBuf = SPI.transfer(0x00);
     _pBuf++;
     count++;
   }
+  DBG(pBuf[0]);
   _pSpi->endTransaction();
   digitalWrite(_cs,1);
   return count;
@@ -488,15 +489,14 @@ uint8_t  DFRobot_H3LIS200DL_SPI::writeReg(uint8_t reg,const void *pBuf,size_t si
 	  DBG("pBuf ERROR!! : null pointer");
   }
   uint8_t * _pBuf = (uint8_t *)pBuf;
-  digitalWrite(_cs,0);
   _pSpi->beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
-
+  digitalWrite(_cs,0);
   _pSpi->transfer(reg);
   while(size--) {
     _pSpi->transfer(*_pBuf);
     _pBuf ++;
   }
 
-  SPI.endTransaction();
+  //SPI.endTransaction();
   digitalWrite(_cs,1);
 }

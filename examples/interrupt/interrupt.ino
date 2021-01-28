@@ -137,11 +137,11 @@ void loop(void){
     DFRobot_H3LIS200DL::sAccel_t accel = acce.getAcceFromXYZ();
     Serial.print("Acceleration x: "); //print acceleration
     Serial.print(accel.acceleration_x);
-    Serial.print(" mg \ty: ");
+    Serial.print(" g \ty: ");
     Serial.print(accel.acceleration_y);
-    Serial.print(" mg \tz: ");
+    Serial.print(" g \tz: ");
     Serial.print(accel.acceleration_z);
-    Serial.println(" mg");
+    Serial.println(" g");
     delay(100);  
    //The interrupt flag is set
    if(Flag == 1){
