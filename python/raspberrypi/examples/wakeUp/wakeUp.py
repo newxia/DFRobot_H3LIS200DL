@@ -38,7 +38,7 @@ print(acce.getID())
 acce.setRange(acce.E_ONE_HUNDRED)
 
 '''
-    Set data measurement rateï¼?
+    Set data measurement rate
            E_POWER_DOWN 
            E_LOWPOWER_HALFHZ 
            E_LOWPOWER_1HZ 
@@ -80,4 +80,4 @@ while True:
     #Get the acceleration in the three directions of xyz
     x,y,z = acce.readAcceFromXYZ()
     time.sleep(0.1)
-    print("Acceleration [X = %.2f mg,Y = %.2f mg,Z = %.2f mg]"%(x,y,z))
+    print("Acceleration [X = %.2f g,Y = %.2f g,Z = %.2f g]"%(x,y,z))

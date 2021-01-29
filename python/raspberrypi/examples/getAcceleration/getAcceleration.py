@@ -39,7 +39,7 @@ print(acce.getID())
 acce.setRange(acce.E_ONE_HUNDRED)
 
 '''
-    Set data measurement rateï¼?
+    Set data measurement rate
            E_POWER_DOWN 
            E_LOWPOWER_HALFHZ 
            E_LOWPOWER_1HZ 
