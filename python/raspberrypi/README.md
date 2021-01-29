@@ -38,8 +38,7 @@ To use this library, first download the library file, paste it into the \Arduino
 
 ## Methods
 
-```C++
-#include <DFRobot_H3LIS200DL.h>
+```py
 
   def begin(self):
     '''
