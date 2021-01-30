@@ -5,7 +5,7 @@
  * @licence     The MIT License (MIT)
  * @author [fengli](li.feng@dfrobot.com)
  * @version  V1.0
- * @date  2020-12-23
+ * @date  2021-1-23
  * @get from https://www.dfrobot.com
  * @https://github.com/DFRobot/DFRobot_H3LIS200DL
  */
@@ -61,7 +61,7 @@ public:
   Represents the number of data collected per second
 */
 typedef enum{
-   ePowerDown = 0,
+   ePowerDown = 0,/*0.5 hz*/
    eLowPower_halfHZ,/*0.5 hz*/
    eLowPower_1HZ,
    eLowPower_2HZ,
@@ -82,19 +82,17 @@ typedef enum{
 }eRange_t;
 
 /*!     High-pass filter cut-off frequency configuration
- * ---------------------------------------------------------------------------------------
- * |-------------------------------------------------------------|
+ * |--------------------------------------------------------------------------------------------------------|
  * |                |    ft [Hz]      |        ft [Hz]       |       ft [Hz]        |        ft [Hz]        |
  * |   mode         |Data rate = 50 Hz|   Data rate = 100 Hz |  Data rate = 400 Hz  |   Data rate = 1000 Hz |
  * |--------------------------------------------------------------------------------------------------------|
  * |  eCutoffMode1  |     1           |         2            |            8         |             20        |
  * |--------------------------------------------------------------------------------------------------------|
- * |  eCutoffMode1  |    0.5          |         1            |            4         |             10        |
+ * |  eCutoffMode2  |    0.5          |         1            |            4         |             10        |
  * |--------------------------------------------------------------------------------------------------------|
- * |  eCutoffMode1  |    0.25         |         0.5          |            2         |             5         |
+ * |  eCutoffMode3  |    0.25         |         0.5          |            2         |             5         |
  * |--------------------------------------------------------------------------------------------------------|
- * |  eCutoffMode1  |    0.125        |         0.25         |            1         |             2.5       |
- * |--------------------------------------------------------------------------------------------------------|
+ * |  eCutoffMode4  |    0.125        |         0.25         |            1         |             2.5       |
  * |--------------------------------------------------------------------------------------------------------|
  */
 typedef enum{
@@ -131,9 +129,9 @@ typedef enum{
 */
 typedef struct
 {
- float acceleration_x;/**<acceleration in x direction(g)>*/
- float acceleration_y;/**<acceleration in y direction(g)>*/
- float acceleration_z;/**<acceleration in z direction(g)>*/
+ float acc_x;/**<acceleration in x direction(g)>*/
+ float acc_y;/**<acceleration in y direction(g)>*/
+ float acc_z;/**<acceleration in z direction(g)>*/
 }sAccel_t;
 
 public:
@@ -167,7 +165,7 @@ public:
   
   /**
    * @brief Set data measurement rate
-   * @param range:rate(g)
+   * @param range:rate
    */
   void setAcquireRate(ePowerMode_t rate);
   
@@ -178,35 +176,48 @@ public:
                  eCutoffMode2,
                  eCutoffMode3,
                  eCutoffMode4,
-                 eShutDown,
+                 eShutDown,  无过滤
+   *|                     High-pass filter cut-off frequency configuration-----------------------------------|
+   *|--------------------------------------------------------------------------------------------------------|
+   *|                |    ft [Hz]      |        ft [Hz]       |       ft [Hz]        |        ft [Hz]        |
+   *|   mode         |Data rate = 50 Hz|   Data rate = 100 Hz |  Data rate = 400 Hz  |   Data rate = 1000 Hz |
+   *|--------------------------------------------------------------------------------------------------------|
+   *|  eCutoffMode1  |     1           |         2            |            8         |             20        |
+   *|--------------------------------------------------------------------------------------------------------|
+   *|  eCutoffMode2  |    0.5          |         1            |            4         |             10        |
+   *|--------------------------------------------------------------------------------------------------------|
+   *|  eCutoffMode3  |    0.25         |         0.5          |            2         |             5         |
+   *|--------------------------------------------------------------------------------------------------------|
+   *|  eCutoffMode4  |    0.125        |         0.25         |            1         |             2.5       |
+   *|--------------------------------------------------------------------------------------------------------|
    */
   void setHFilterMode(eHighPassFilter_t mode);
 
   /**
    * @brief Set the threshold of interrupt source 1 interrupt
-   * @param threshold:Threshold(g)
+   * @param threshold 范围是量程的范围(unit:g)
    */
   void setIntOneTh(uint8_t threshold);
 
   /**
    * @brief Set interrupt source 2 interrupt generation threshold
-   * @param threshold:Threshold(g)
+   * @param threshold 范围是量程的范围(unit:g
    */
   void setIntTwoTh(uint8_t threshold);
 
   /**
    * @brief Enable sleep wake function
-   * @param enable:true\false
-   * @return 0
+   * @param enable:true(enable)\false(disable)
+   * @return 1:表示使能失败/0：表示使能成功
    */
   int enableSleep(bool enable);
   
   /**
    * @brief Get the acceleration in the three directions of xyz
    * @return Three-axis acceleration 
-             acceleration_x;
-             acceleration_y;
-             acceleration_z;
+             acc_x;
+             acc_y;
+             acc_z;
    */
   sAccel_t getAcceFromXYZ();
 
@@ -226,7 +237,7 @@ public:
 
   /**
    * @brief Check whether the interrupt event'source' is generated in interrupt 2
-   * @param source:Interrupt event
+   * @param source Interrupt event
                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
@@ -238,15 +249,32 @@ public:
    */
   bool getInt2Event(eInterruptEvent_t source);
   
+  /**
+   * @brief Get the acceleration in the x direction
+   * @return acceleration (unit:g)
+
+   */
+  float readAccX();
+  
+  /**
+   * @brief Get the acceleration in the y direction
+   * @return acceleration (unit:g)
+
+   */
+  float readAccY();
+  
+  /**
+   * @brief Get the acceleration in the z direction
+   * @return acceleration (unit:g)
+
+   */
+  float readAccZ();
 protected:
   uint8_t _interface = 0;
   uint8_t reset = 0;
   uint8_t _range = 100;
-  void enableXYZ();
-    bool getDataFlag();
-    int readACCFromX();
-    int readACCFromY();
-    int readACCFromZ();
+
+
   virtual uint8_t readReg(uint8_t reg,uint8_t * pBuf ,size_t size) = 0;
   /**
    * @brief Write command into sensor chip 
@@ -255,6 +283,10 @@ protected:
    * @param size  The number of the byte of command
    */
   virtual uint8_t  writeReg(uint8_t reg,const void *pBuf,size_t size)= 0; 
+private:
+
+  void enableXYZ();
+  bool getDataFlag();
 };
 
 
@@ -294,6 +326,11 @@ private:
 class DFRobot_H3LIS200DL_SPI : public DFRobot_H3LIS200DL{
 
 public:
+  /*!
+   * @brief Constructor 
+   * @param cs : Chip selection pinChip selection pin
+   * @param spi :SPI controller
+   */
   DFRobot_H3LIS200DL_SPI(uint8_t cs,SPIClass *spi=&SPI);
   
   /**

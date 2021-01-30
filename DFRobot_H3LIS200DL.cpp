@@ -5,21 +5,13 @@
  * @licence     The MIT License (MIT)
  * @author [fengli](li.feng@dfrobot.com)
  * @version  V1.0
- * @date  2020-12-23
+ * @date  2021-1-27
  * @get from https://www.dfrobot.com
  * @https://github.com/DFRobot/DFRobot_H3LIS200DL
  */
 
 #include <DFRobot_H3LIS200DL.h>
-
-
-
-
-DFRobot_H3LIS200DL::DFRobot_H3LIS200DL(){
-
-
-
-}
+DFRobot_H3LIS200DL::DFRobot_H3LIS200DL(){}
 
 int DFRobot_H3LIS200DL::begin(void){
 
@@ -38,7 +30,7 @@ int DFRobot_H3LIS200DL::begin(void){
     return 1;
   } else {  
     DBG("the ic is not LIS331HH");
-    return 1;
+    return 2;
   }
 
 }
@@ -266,14 +258,12 @@ void DFRobot_H3LIS200DL::setInt2PadSource(eInterruptSource_t source){
 
   }
   writeReg(H3LIS200DL_REG_CTRL_REG3,&reg,1);
-  
-  
-
 }
 */
 int DFRobot_H3LIS200DL::enableSleep(bool enable)
 {
   uint8_t reg = 0;
+  uint8_t readRe = 0;
 
   if(enable == true)
     reg = 3;
@@ -281,7 +271,16 @@ int DFRobot_H3LIS200DL::enableSleep(bool enable)
     reg = 0;
   writeReg(H3LIS200DL_REG_CTRL_REG5,&reg,1);
 
-  return 0;
+  uint8_t regester = H3LIS200DL_REG_CTRL_REG5;
+  if(_interface == 1){
+    regester  = H3LIS200DL_REG_CTRL_REG5 | 0x80;
+  }
+  readReg(regester,&readRe,1);
+  
+  if(reg == readRe)
+    return 0;
+  else 
+    return 1;
 }
 void DFRobot_H3LIS200DL::setHFilterMode(eHighPassFilter_t mode){
 
@@ -313,28 +312,40 @@ void DFRobot_H3LIS200DL::enableXYZ(){
 }
 
 
-int DFRobot_H3LIS200DL::readACCFromX(){
+float DFRobot_H3LIS200DL::readAccX(){
   uint8_t reg = 0;
   uint8_t ACCX = 0;
   readReg(H3LIS200DL_REG_STATUS_REG,&reg,1);
   DBG(reg);
   if((reg & 0x01) == 1){
      readReg(H3LIS200DL_REG_OUT_X,&ACCX,1);
-     int a = ((int8_t)ACCX *_range)/128;
+     float a = ((int8_t)ACCX *_range)/128;
      return a;
   } else{
      return 0;
   }
 
 }
-int DFRobot_H3LIS200DL::readACCFromY(){
+float DFRobot_H3LIS200DL::readAccY(){
   uint8_t reg = 0;
   uint8_t ACCY = 0;
   readReg(H3LIS200DL_REG_STATUS_REG,&reg,1);
   DBG(reg);
-  if((reg & 0x02) == 1){
+  if((reg & 0x02) == 2){
      readReg(H3LIS200DL_REG_OUT_Y,&ACCY,1);
-     int a = ((int8_t)ACCY *_range)/128;
+     float a = ((int8_t)ACCY *_range)/128;
+     return a;
+  } else{
+     return 0;
+  }
+}
+float DFRobot_H3LIS200DL::readAccZ(){
+  uint8_t reg = 0;
+  uint8_t ACCZ = 0;
+  readReg(H3LIS200DL_REG_STATUS_REG,&reg,1);
+  if((reg & 0x04) == 4){
+     readReg(H3LIS200DL_REG_OUT_Z,&ACCZ,1);
+     float a = ((int8_t)ACCZ *_range)/128;
      return a;
   } else{
      return 0;
@@ -353,7 +364,7 @@ DFRobot_H3LIS200DL::sAccel_t DFRobot_H3LIS200DL::getAcceFromXYZ()
     regester  = H3LIS200DL_REG_STATUS_REG | 0x80;
   }
   readReg(regester,&reg,1);
-  if((reg & 0x01) == 1){
+  if((reg & 0x01) > 1){
      if(_interface == 1){
 		 offset = 0x80;
      }
@@ -367,27 +378,16 @@ DFRobot_H3LIS200DL::sAccel_t DFRobot_H3LIS200DL::getAcceFromXYZ()
      float a = ((int8_t)sensorData[0]*_range)/128;
 	 float b = ((int8_t)sensorData[1]*_range)/128;
 	 float c = ((int8_t)sensorData[2]*_range)/128;
-     accel.acceleration_x = a;
-     accel.acceleration_y = b;
-     accel.acceleration_z = c;
+     accel.acc_x = a;
+     accel.acc_y = b;
+     accel.acc_z = c;
 
       
   }
 return accel;
 
 }
-int DFRobot_H3LIS200DL::readACCFromZ(){
-  uint8_t reg = 0;
-  uint8_t ACCZ = 0;
-  readReg(H3LIS200DL_REG_STATUS_REG,&reg,1);
-  if((reg & 0x04) == 1){
-     readReg(H3LIS200DL_REG_OUT_Z,&ACCZ,1);
-     int a = ((int8_t)ACCZ *_range)/128;
-     return a;
-  } else{
-     return 0;
-  }
-}
+
 
 
 
