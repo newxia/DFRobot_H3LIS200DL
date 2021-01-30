@@ -10,11 +10,17 @@
  * @get from https://www.dfrobot.com
  * @https://github.com/DFRobot/DFRobot_H3LIS200DL
  */
-
 #include <DFRobot_H3LIS200DL.h>
 
+//当你使用I2C通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_I2C构造对象
+/*!
+ * @brief Constructor 
+ * @param pWire I2c controller
+ * @param addr  I2C address(0x18/0x19)
+ */
+//DFRobot_H3LIS200DL_I2C acce/*(&Wire,0x19)*/;
 
-
+//当你使用SPI通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_SPI构造对象
 #if defined(ESP32) || defined(ESP8266)
 #define H3LIS200DL_CS  D5
 
@@ -27,13 +33,7 @@
  * @param cs : Chip selection pinChip selection pin
  * @param spi :SPI controller
  */
-//DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
-/*!
- * @brief Constructor 
- * @param pWire I2c controller
- * @param addr  I2C address(0x19/0x18)
- */
-DFRobot_H3LIS200DL_I2C acce;
+DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
 volatile int Flag = 0;
 void interEvent(){
   Flag = 1;
@@ -44,6 +44,7 @@ void setup(void){
   Serial.begin(9600);
     //Chip initialization
   while(acce.begin()){
+     delay(1000);
      Serial.println("init failure");
   }
   //Get chip id
@@ -71,16 +72,8 @@ void setup(void){
       eNormal_1000HZ,
   */
   acce.setAcquireRate(/*Rate = */DFRobot_H3LIS200DL::eNormal_50HZ);
-  #ifdef ARDUINO_ARCH_MPYTHON 
-  /*                    The Correspondence Table of ESP32 Interrupt Pins And Terminal Numbers
-   * -----------------------------------------------------------------------------------------------------
-   * |            |  DigitalPin  | P0-P20 can be used as an external interrupt                           |
-   * |    esp32   |--------------------------------------------------------------------------------------|
-   * |            | Interrupt No |  DigitalPinToInterrupt (Pn) can be used to query the interrupt number |
-   * |---------------------------------------------------------------------------------------------------|
-   */
-  attachInterrupt(digitalPinToInterrupt(P16)/*Query the interrupt number of the P16 pin*/,interEvent,CHANGE);
-  //Open esp32's P16 pin for external interrupt, bilateral edge trigger, INT1/2 connected to P16
+  #if defined(ESP32) || defined(ESP8266)||defined(ARDUINO_SAM_ZERO)
+  attachInterrupt(digitalPinToInterrupt(D4)/*Query the interrupt number of the D4 pin*/,interEvent,CHANGE);
   #else
   /*    The Correspondence Table of AVR Series Arduino Interrupt Pins And Terminal Numbers
    * ---------------------------------------------------------------------------------------

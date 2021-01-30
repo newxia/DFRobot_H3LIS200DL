@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 """
    @file interrupt.py
-   @brief Enable some interrupt events in the sensor, and get
+   @brief Enable interrupt events in the sensor, and get
    @n the interrupt signal through the interrupt pin
    @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
    @licence     The MIT License (MIT)
@@ -20,89 +20,94 @@ sys.path.append("../..") # set system path to top
 from DFRobot_H3LIS200DL import *
 import time
 from gpio import GPIO
-# peripheral params
-RASPBERRY_PIN_CS = 27              #Chip selection pin
-I2C_MODE         = 0x01            # default use I2C1
-ADDRESS_0        = 0x19
+
+
 INT1 = 26                           #Interrupt pin
+int_pad_Lock = threading.Lock()       #intPad threading lock
+int_pad_Flag = False                 #intPad flag
+def int_pad_callback():
+  global int_pad_Lock, int_pad_Flag
+  int_pad_Lock.acquire()                # wait intPad  lock release
+  int_pad_Flag = True
+  int_pad_Lock.release() 
 
-intPadLock = threading.Lock() # intPad  threading lock
-intPadAFlag = False # intPad  flag
+
+#如果你想要用SPI驱动此模块，打开下面两行的注释,并通过SPI连接好模块和树莓派
+#RASPBERRY_PIN_CS =  27              #Chip selection pin when SPI is selected
+#acce = DFRobot_H3LIS200DL_SPI(RASPBERRY_PIN_CS)
 
 
-def keyCallBack():
-  global intPadLock, intPadAFlag
-  intPadLock.acquire() # wait intPad  lock release
-  intPadAFlag = True
-  #print("-------------------------interrupt------------------------");
-  intPadLock.release() 
-intPad = GPIO(INT1, GPIO.IN) # set intPad to input
-intPad.setInterrupt(GPIO.FALLING, keyCallBack) #set intPad interrupt callback
+#如果你想要应IIC驱动此模块，打开下面三行的注释，并通过I2C连接好模块和树莓派
+I2C_MODE         = 0x01             #default use I2C1
+ADDRESS_0        = 0x19             #I2C address
+acce = DFRobot_H3LIS200DL_I2C(I2C_MODE ,ADDRESS_0)
 
-acce = DFRobot_H3LIS200DL_SPI(RASPBERRY_PIN_CS)
-#acce = DFRobot_H3LIS200DL_I2C(I2C_MODE ,ADDRESS_0)
-# clear screen
+int_pad = GPIO(INT1, GPIO.IN)                   # set int_Pad to input
+int_pad.setInterrupt(GPIO.FALLING, int_pad_callback) #set int_Pad interrupt callback
+#Chip initialization
 acce.begin()
+#Get chip id
 print("chip id :")
 print(acce.getID())
 '''
-    set range:Range(g)
-              E_ONE_HUNDRED =0#/**< ±100g>*/
-              E_TWO_HUNDRED = 1#/**< ±200g>*/
+set range:Range(g)
+         RANGE_100_G   # ±100g
+         RANGE_200_G   # ±200g
 '''
-acce.setRange(acce.E_ONE_HUNDRED)
+acce.set_range(acce.RANGE_100_G)
 '''
-    Set data measurement rate
-           E_POWER_DOWN 
-           E_LOWPOWER_HALFHZ 
-           E_LOWPOWER_1HZ 
-           E_LOWPOWER_2HZ 
-           E_LOWPOWER_5HZ 
-           E_LOWPOWER_10HZ 
-           E_NORMAL_50HZ 
-           E_NORMAL_100HZ 
-           E_NORMAL_400HZ 
-           E_NORMAL_1000HZ 
+Set data measurement rate
+     POWERDOWN_0HZ 
+     LOWPOWER_HALFHZ 
+     LOWPOWER_1HZ 
+     LOWPOWER_2HZ 
+     LOWPOWER_5HZ 
+     LOWPOWER_10HZ 
+     NORMAL_50HZ 
+     NORMAL_100HZ 
+     NORMAL_400HZ 
+     NORMAL_1000HZ 
 '''
-acce.setAcquireRate(acce.E_NORMAL_50HZ)
+acce.set_acquire_rate(acce.NORMAL_50HZ)
 
 '''
-    Set the threshold of interrupt source 1 interrupt
-    threshold:Threshold(g)
+Set the threshold of interrupt source 1 interrupt
+threshold Threshold(g),范围是设置好的的测量量程
 '''
-acce.setIntOneTh(5);#0 - 100 / 0 - 200 
+acce.set_int1_th(5);
 
 '''
 @brief Enable interrupt
-@ source:Interrupt pin selection
-         eINT1 = 0,/<int1 >/
-         eINT2,/<int2>/
-@param event:Interrupt event selection
-              eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
-              eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
-              eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
-              eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
-              eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
-              eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
+@source Interrupt pin selection
+         INT_1 = 0,/<int pad 1 >/
+         INT_2,/<int pad 2>/
+@param event Interrupt event selection
+             X_LOWTHAN_TH = 0 <The acceleration in the x direction is less than the threshold>
+             X_HIGHERTHAN_TH  = 1<The acceleration in the x direction is greater than the threshold>
+             Y_LOWTHAN_TH = 2<The acceleration in the y direction is less than the threshold>
+             Y_HIGHERTHAN_TH = 3<The acceleration in the y direction is greater than the threshold>
+             Z_LOWTHAN_TH = 4<The acceleration in the z direction is less than the threshold
+             Z_HIGHERTHAN_TH = 5<The acceleration in the z direction is greater than the threshold>
+             EVENT_ERROR = 6 <No event>
 '''
-acce.enableInterruptEvent(acce.eINT1,acce.E_Y_HIGHERTHAN_TH)
+acce.enable_int_event(acce.eINT1,acce.Y_HIGHERTHAN_TH)
 time.sleep(1)
 
 while True:
     
-    if(intPadAFlag == True):
+    if(int_pad_Flag == True):
       #Check whether the interrupt event'source' is generated in interrupt 1
-      if acce.getInt1Event(acce.E_Y_HIGHERTHAN_TH) == True:
+      if acce.get_int1_event(acce.Y_HIGHERTHAN_TH) == True:
          print("The acceleration in the y direction is greater than the threshold")
       
-      if acce.getInt1Event(acce.E_Z_HIGHERTHAN_TH) == True:
+      if acce.get_int1_event(acce.Z_HIGHERTHAN_TH) == True:
         print("The acceleration in the z direction is greater than the threshold")
        
-      if acce.getInt1Event(acce.E_X_HIGHERTHAN_TH) == True:
+      if acce.get_int1_event(acce.X_HIGHERTHAN_TH) == True:
         print("The acceleration in the x direction is greater than the threshold")
       
-      intPadAFlag = False
+      int_pad_Flag = False
     #Get the acceleration in the three directions of xyz
-    x,y,z = acce.readAcceFromXYZ()
+    x,y,z = acce.read_acce_xyz()
     time.sleep(0.1)
     print("Acceleration [X = %.2f g,Y = %.2f g,Z = %.2f g]"%(x,y,z))

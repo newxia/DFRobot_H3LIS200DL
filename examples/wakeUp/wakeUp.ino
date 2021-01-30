@@ -13,8 +13,18 @@
 
 #include <DFRobot_H3LIS200DL.h>
 
+//当你使用I2C通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_I2C构造对象
+/*!
+ * @brief Constructor 
+ * @param pWire I2c controller
+ * @param addr  I2C address(0x18/0x19)
+ */
+//DFRobot_H3LIS200DL_I2C acce/*(&Wire,0x19)*/;
+
+//当你使用SPI通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_SPI构造对象
 #if defined(ESP32) || defined(ESP8266)
 #define H3LIS200DL_CS  D5
+
 /* AVR series mainboard */
 #else
 #define H3LIS200DL_CS 3
@@ -24,14 +34,13 @@
  * @param cs : Chip selection pinChip selection pin
  * @param spi :SPI controller
  */
-//DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
-
-DFRobot_H3LIS200DL_I2C acce;
+DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
 void setup(void){
 
   Serial.begin(9600);
   //Chip initialization
   while(acce.begin()){
+     delay(1000);
      Serial.println("init failure");
   }
   //Get chip id

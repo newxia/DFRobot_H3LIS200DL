@@ -13,8 +13,15 @@
 
 #include <DFRobot_H3LIS200DL.h>
 
+//当你使用I2C通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_I2C构造对象
+/*!
+ * @brief Constructor 
+ * @param pWire I2c controller
+ * @param addr  I2C address(0x18/0x19)
+ */
+//DFRobot_H3LIS200DL_I2C acce/*(&Wire,0x19)*/;
 
-
+//当你使用SPI通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_SPI构造对象
 #if defined(ESP32) || defined(ESP8266)
 #define H3LIS200DL_CS  D5
 
@@ -29,12 +36,14 @@
  */
 DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
 
-//DFRobot_H3LIS200DL_I2C acce;
+
+
 void setup(void){
 
   Serial.begin(9600);
   //Chip initialization
   while(acce.begin()){
+     delay(1000);
      Serial.println("init failure");
   }
   //Get chip id
@@ -43,8 +52,8 @@ void setup(void){
   
   /**
     set range:Range(g)
-              eOnehundred ,/<±100g>/
-              eTwohundred ,/<±200g>/
+          eOnehundred ,/<±100g>/
+          eTwohundred ,/<±200g>/
   */
   acce.setRange(/*Range = */DFRobot_H3LIS200DL::eOnehundred);
 
@@ -66,14 +75,28 @@ void setup(void){
 }
 
 void loop(void){
+
+
+
+    //Get the acceleration in the three directions of xyz
+    Serial.print("Acceleration x: "); //print acceleration
+    Serial.print(acce.readAccX());
+    Serial.print(" g \ty: ");
+    Serial.print(acce.readAccY());
+    Serial.print(" g \tz: ");
+    Serial.print(acce.readAccZ());
+    Serial.println(" g");
+    delay(300);
+    /*
     //Get the acceleration in the three directions of xyz
     DFRobot_H3LIS200DL::sAccel_t accel = acce.getAcceFromXYZ();
     Serial.print("Acceleration x: "); //print acceleration
-    Serial.print(accel.acceleration_x);
+    Serial.print(acce.acceleration_x);
     Serial.print(" g \ty: ");
-    Serial.print(accel.acceleration_y);
+    Serial.print(acce.acceleration_y);
     Serial.print(" g \tz: ");
-    Serial.print(accel.acceleration_z);
+    Serial.print(acce.acceleration_z);
     Serial.println(" g");
     delay(300);
+    */
 }
