@@ -55,10 +55,10 @@ To use this library, first download the library file, paste it into the \Arduino
   
   /**
    * @brief Enable interrupt
-   * @ source:Interrupt pin selection
+   * @ source Interrupt pin selection
               eINT1 = 0,/<int1 >/
               eINT2,/<int2>/
-   * @param event:Interrupt event selection
+   * @param event Interrupt event selection
                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
@@ -70,7 +70,7 @@ To use this library, first download the library file, paste it into the \Arduino
   
   /**
    * @brief Set the measurement range
-   * @param range:Range(g)
+   * @param range Range(g)
             e100_g =  ±100g
             e200_g = ±200g
    */
@@ -78,7 +78,7 @@ To use this library, first download the library file, paste it into the \Arduino
   
   /**
    * @brief Set data measurement rate
-   * @param range:rate
+   * @param range rate(HZ)
                   ePowerDown_0HZ = 0,测量关闭
                   eLowPower_halfHZ,0.5 hz
                   eLowPower_1HZ,
@@ -94,7 +94,7 @@ To use this library, first download the library file, paste it into the \Arduino
   
   /**
    * @brief Set data filtering mode
-   * @param mode:Four modes
+   * @param mode Four modes
                  eCutoffMode1 = 0,
                  eCutoffMode2,
                  eCutoffMode3,
@@ -130,7 +130,7 @@ To use this library, first download the library file, paste it into the \Arduino
 
   /**
    * @brief Enable sleep wake function
-   * @param enable:true(enable)\false(disable)
+   * @param enable true(enable)\false(disable)
    * @return 1:表示使能失败/0：表示使能成功
    */
   int enableSleep(bool enable);
@@ -146,7 +146,7 @@ To use this library, first download the library file, paste it into the \Arduino
 
   /**
    * @brief Check whether the interrupt event'source' is generated in interrupt 1
-   * @param source:Interrupt event
+   * @param source Interrupt event
                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
