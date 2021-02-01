@@ -144,7 +144,7 @@ public:
  
   /**
    * @brief Get chip id
-   * @return Returns the eight-digit serial number
+   * @return Returns the 8 bit serial number
    */
   uint8_t getID();
   
@@ -219,7 +219,7 @@ public:
 
   /**
    * @brief Set interrupt source 2 interrupt generation threshold
-   * @param threshold 范围是量程的范围(unit:g
+   * @param threshold 范围是量程的范围(unit:g）
    */
   void setIntTwoTh(uint8_t threshold);
 
