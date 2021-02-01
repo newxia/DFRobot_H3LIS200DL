@@ -38,113 +38,137 @@ To use this library, first download the library file, paste it into the \Arduino
 
 ## Methods
 
-```C++
+```python
 #include <DFRobot_H3LIS200DL.h>
+  '''
+    @brief Initialize the function
+    @return Return 0 indicates a successful initialization, while other values indicates failure and return to error code.
+  '''
+  def begin(self)
+  
+  '''
+    @brief Get chip id
+    @return Returns the 8 bit serial number
+  '''
+  def get_id(self)
 
-  def begin(self):
-    '''
-      @brief Initialize the function
-      @return Return 0 indicates a successful initialization, while other values indicates failure and return to error code.
-    '''
-      
+  '''
+    @brief Set the measurement range
+    @param range:Range(g)
+               RANGE_100_G =0 # ±100g
+               RANGE_200_G = 1# ±200g
+  '''
+  def set_range(self,range_r)
 
-  def getID(self):
-    '''
-      @brief Get chip id
-      @return Returns the eight-digit serial number
-    '''
-
-
-  def setRange(self,range_r):
-    '''
-      @brief Set the measurement range
-      @param range:Range(g)
-             eOnehundred =  ±100g
-             eTwohundred = ±200g
-    '''
-
-  def setAcquireRate(self, rate):
-    '''
-      @brief Set data measurement rate
-      @param range:rate(g)
-    '''
+  '''
+    @brief Set data measurement rate
+    @param range:rate(HZ)
+                 POWERDOWN_0HZ = 0
+                 LOWPOWER_HALFHZ = 1 
+                 LOWPOWER_1HZ = 2
+                 LOWPOWER_2HZ = 3
+                 LOWPOWER_5HZ = 4
+                 LOWPOWER_10HZ = 5 
+                 NORMAL_50HZ = 6
+                 NORMAL_100HZ = 7
+                 NORMAL_400HZ = 8
+                 NORMAL_1000HZ = 9
+  '''
+  def set_acquire_rate(self, rate)
 
 
-  def setIntOneTh(self,threshold):
-    '''
-      @brief Set the threshold of interrupt source 1 interrupt
-      @param threshold:Threshold(g)
-    '''
+  '''
+    @brief Set the threshold of interrupt source 1 interrupt
+    @param threshold:Threshold(g)
+  '''
+  def set_int1_th(self,threshold)
 
+  '''
+    @brief Set interrupt source 2 interrupt generation threshold
+    @param threshold:Threshold(g)
+  '''
+  def set_int2_th(self,threshold)
+  
+  '''
+    @brief Enable interrupt
+    @source Interrupt pin selection
+             INT_1 = 0,/<int pad 1 >/
+             INT_2,/<int pad 2>/
+    @param event Interrupt event selection
+                 X_LOWTHAN_TH = 0 <The acceleration in the x direction is less than the threshold>
+                 X_HIGHERTHAN_TH  = 1<The acceleration in the x direction is greater than the threshold>
+                 Y_LOWTHAN_TH = 2<The acceleration in the y direction is less than the threshold>
+                 Y_HIGHERTHAN_TH = 3<The acceleration in the y direction is greater than the threshold>
+                 Z_LOWTHAN_TH = 4<The acceleration in the z direction is less than the threshold
+                 Z_HIGHERTHAN_TH = 5<The acceleration in the z direction is greater than the threshold>
+                 EVENT_ERROR = 6 <No event>
+  '''
+  def enable_int_event(self,source,event)
 
+  '''
+    @brief Check whether the interrupt event'source' is generated in interrupt 1
+    @param source:Interrupt event
+                  X_LOWTHAN_TH = 0 <The acceleration in the x direction is less than the threshold>
+                  X_HIGHERTHAN_TH  = 1<The acceleration in the x direction is greater than the threshold>
+                  Y_LOWTHAN_TH = 2<The acceleration in the y direction is less than the threshold>
+                  Y_HIGHERTHAN_TH = 3<The acceleration in the y direction is greater than the threshold>
+                  Z_LOWTHAN_TH = 4<The acceleration in the z direction is less than the threshold
+                  Z_HIGHERTHAN_TH = 5<The acceleration in the z direction is greater than the threshold>
+                  EVENT_ERROR = 6 <No event>
+    @return true ：produce
+            false：Interrupt event
+  '''
+  def get_int1_event(self,source)
+         
+  '''
+    @brief Check whether the interrupt event'source' is generated in interrupt 2
+    @param source:Interrupt event
+                  X_LOWTHAN_TH = 0 <The acceleration in the x direction is less than the threshold>
+                  X_HIGHERTHAN_TH  = 1<The acceleration in the x direction is greater than the threshold>
+                  Y_LOWTHAN_TH = 2<The acceleration in the y direction is less than the threshold>
+                  Y_HIGHERTHAN_TH = 3<The acceleration in the y direction is greater than the threshold>
+                  Z_LOWTHAN_TH = 4<The acceleration in the z direction is less than the threshold
+                  Z_HIGHERTHAN_TH = 5<The acceleration in the z direction is greater than the threshold>
+                  EVENT_ERROR = 6 <No event>
+    @return true ：produce
+            false：Interrupt event
+  '''
+  def get_int2_event(self,source)
 
-  def setIntTwoTh(self,threshold):
-    '''
-      @brief Set interrupt source 2 interrupt generation threshold
-      @param threshold:Threshold(g)
-    '''
+  '''
+    @brief Enable sleep wake function
+    @param enable:True(enable)/False(disable)
+  '''
+  def enable_sleep(self, enable)
+  
+  '''
+    @brief Set data filtering mode
+    @param mode:Four modes
+                CUTOFF_MODE1 = 0
+                CUTOFF_MODE2 = 1
+                CUTOFF_MODE3 = 2
+                CUTOFF_MODE4 = 3
+     High-pass filter cut-off frequency configuration
+    |--------------------------------------------------------------------------------------------------------|
+    |                |    ft [Hz]      |        ft [Hz]       |       ft [Hz]        |        ft [Hz]        |
+    |   mode         |Data rate = 50 Hz|   Data rate = 100 Hz |  Data rate = 400 Hz  |   Data rate = 1000 Hz |
+    |--------------------------------------------------------------------------------------------------------|
+    |  CUTOFF_MODE1  |     1           |         2            |            8         |             20        |
+    |--------------------------------------------------------------------------------------------------------|
+    |  CUTOFF_MODE2  |    0.5          |         1            |            4         |             10        |
+    |--------------------------------------------------------------------------------------------------------|
+    |  CUTOFF_MODE3  |    0.25         |         0.5          |            2         |             5         |
+    |--------------------------------------------------------------------------------------------------------|
+    |  CUTOFF_MODE4  |    0.125        |         0.25         |            1         |             2.5       |
+    |--------------------------------------------------------------------------------------------------------|
+  '''
+  def set_filter_mode(self,mode)
 
-  def enableInterruptEvent(self,source,event):
-    '''
-      @brief Enable interrupt
-      @param source:Interrupt pin selection
-      @param event:Interrupt event selection
-    '''
-
-  def getInt1Event(self,source):
-    '''
-      @brief Check whether the interrupt event'source' is generated in interrupt 1
-      @param source:Interrupt event
-                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
-                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
-                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
-                    eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
-                    eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
-                    eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
-      @return true ：produce
-              false：Interrupt event
-    '''
-
-  def getInt2Event(self,source):
-    '''
-      @brief Check whether the interrupt event'source' is generated in interrupt 2
-      @param source:Interrupt event
-                    eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
-                    eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
-                    eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
-                    eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
-                    eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
-                    eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
-      @return true ：produce
-              false：Interrupt event
-    '''
-
-  def enableSleep(self, enable):
-    '''
-      @brief Enable sleep wake function
-      @param enable:true\false
-      @return 0
-    '''
-
-  def setHFilterMode(self,mode):
-    '''
-      @brief Set data filtering mode
-      @param mode:Four modes
-                eCutoffMode1 = 0,
-                eCutoffMode2,
-                eCutoffMode3,
-                eCutoffMode4,
-                eShutDown,
-    '''
-
-  def readAcceFromXYZ(self):
-    '''
-      @brief Get the acceleration in the three directions of xyz
-      @return Three-axis acceleration 
-              acceleration_x;
-              acceleration_y;
-              acceleration_z;
-    '''
+  '''
+    @brief Get the acceleration in the three directions of xyz
+    @return Three-axis acceleration 
+  '''
+  def read_acce_xyz(self)
 
 ```
 
@@ -152,7 +176,7 @@ To use this library, first download the library file, paste it into the \Arduino
 
 MCU                | Work Well    | Work Wrong   | Untested    | Remarks
 ------------------ | :----------: | :----------: | :---------: | -----
-树莓派        |      √       |              |             | 
+树莓派3             |      √         |            |             | 
 
 
 

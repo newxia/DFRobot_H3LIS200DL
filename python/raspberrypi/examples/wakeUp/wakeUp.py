@@ -59,7 +59,7 @@ acce.setAcquireRate(acce.NORMAL_50HZ)
    Set the threshold of interrupt source 1 interrupt
    threshold Threshold(g),范围是设置好的的测量量程
 '''
-acce.setIntOneTh(3); 
+acce.setIntOneTh(5); 
 
 #Enable sleep wake function
 acce.enableSleep(True);

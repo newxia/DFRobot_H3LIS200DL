@@ -244,7 +244,17 @@ class DFRobot_H3LIS200DL(object):
   
   '''
     @brief Set data measurement rate
-    @param range:rate(g)
+    @param range:rate(HZ)
+                 POWERDOWN_0HZ = 0
+                 LOWPOWER_HALFHZ = 1 
+                 LOWPOWER_1HZ = 2
+                 LOWPOWER_2HZ = 3
+                 LOWPOWER_5HZ = 4
+                 LOWPOWER_10HZ = 5 
+                 NORMAL_50HZ = 6
+                 NORMAL_100HZ = 7
+                 NORMAL_400HZ = 8
+                 NORMAL_1000HZ = 9
   '''
   def set_acquire_rate(self, rate):
     regester = self.REG_CTRL_REG1;
@@ -433,16 +443,15 @@ class DFRobot_H3LIS200DL(object):
     |                |    ft [Hz]      |        ft [Hz]       |       ft [Hz]        |        ft [Hz]        |
     |   mode         |Data rate = 50 Hz|   Data rate = 100 Hz |  Data rate = 400 Hz  |   Data rate = 1000 Hz |
     |--------------------------------------------------------------------------------------------------------|
-    |  eCutoffMode1  |     1           |         2            |            8         |             20        |
+    |  CUTOFF_MODE1  |     1           |         2            |            8         |             20        |
     |--------------------------------------------------------------------------------------------------------|
-    |  eCutoffMode2  |    0.5          |         1            |            4         |             10        |
+    |  CUTOFF_MODE2  |    0.5          |         1            |            4         |             10        |
     |--------------------------------------------------------------------------------------------------------|
-    |  eCutoffMode3  |    0.25         |         0.5          |            2         |             5         |
+    |  CUTOFF_MODE3  |    0.25         |         0.5          |            2         |             5         |
     |--------------------------------------------------------------------------------------------------------|
-    |  eCutoffMode4  |    0.125        |         0.25         |            1         |             2.5       |
+    |  CUTOFF_MODE4  |    0.125        |         0.25         |            1         |             2.5       |
     |--------------------------------------------------------------------------------------------------------|
   '''
-  
   def set_filter_mode(self,mode):
     regester = self.REG_CTRL_REG2;
     if(self.__uart_i2c == SPI_MODE):

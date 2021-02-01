@@ -144,7 +144,7 @@ public:
  
   /**
    * @brief Get chip id
-   * @return Returns the eight-digit serial number
+   * @return Returns the 8 bit serial number
    */
   uint8_t getID();
   
@@ -173,7 +173,7 @@ public:
   
   /**
    * @brief Set data measurement rate
-   * @param range:rate
+   * @param range:rate(HZ)
                   ePowerDown_0HZ = 0,测量关闭
                   eLowPower_halfHZ,0.5 hz
                   eLowPower_1HZ,
@@ -219,7 +219,11 @@ public:
 
   /**
    * @brief Set interrupt source 2 interrupt generation threshold
+<<<<<<< HEAD
    * @param threshold 范围是量程的范围(unit:g
+=======
+   * @param threshold 范围是量程的范围(unit:g）
+>>>>>>> 9030556d69430d1f9efa7905f8fff4ec1f5c90fe
    */
   void setIntTwoTh(uint8_t threshold);
 
