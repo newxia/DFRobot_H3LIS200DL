@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 """
-   @file wakeUp.py
+   @file wake_up.py
  * @brief Use sleep wakeup function
    @n 现象：在睡眠唤醒功能里面，当有中断产生，传感器采集速率明显变快
    @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)

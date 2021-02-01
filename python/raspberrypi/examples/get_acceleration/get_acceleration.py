@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 """
-  @file getAcceleration.py
+  @file get_acceleration.py
   @brief Get the acceleration in x, y, z directions
   @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
   @licence     The MIT License (MIT)
