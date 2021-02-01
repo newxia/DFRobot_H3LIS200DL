@@ -136,13 +136,13 @@ void DFRobot_H3LIS200DL::setAcquireRate(ePowerMode_t rate)
   DBG(reg);
   writeReg(REG_CTRL_REG1,&reg,1);
 }
-void DFRobot_H3LIS200DL::setIntOneTh(uint8_t threshold)
+void DFRobot_H3LIS200DL::setInt1Th(uint8_t threshold)
 {
     uint8_t reg = (threshold * 128)/_range;
     DBG(reg);
     writeReg(REG_INT1_THS,&reg,1);
 }
-void DFRobot_H3LIS200DL::setIntTwoTh(uint8_t threshold)
+void DFRobot_H3LIS200DL::setInt2Th(uint8_t threshold)
 {
     uint8_t reg = (threshold * 128)/_range;
     DBG(reg);

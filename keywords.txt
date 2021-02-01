@@ -25,15 +25,15 @@ setRange	KEYWORD2
 setAcquireRate	KEYWORD2
 setHFilterMode	KEYWORD2
 
-setIntOneTh	KEYWORD2
-setIntTwoTh	KEYWORD2
+setInt1Th	KEYWORD2
+setInt2Th	KEYWORD2
 enableSleep	KEYWORD2
 getAcceFromXYZ	KEYWORD2
 getInt2Event	KEYWORD2
 getInt1Event	KEYWORD2
-
-
-
+readAccX	KEYWORD2
+readAccZ	KEYWORD2
+readAccY	KEYWORD2
 
 
 

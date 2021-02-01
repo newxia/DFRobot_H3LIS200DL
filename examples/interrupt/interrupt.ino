@@ -18,7 +18,7 @@
  * @param pWire I2c controller
  * @param addr  I2C address(0x18/0x19)
  */
-//DFRobot_H3LIS200DL_I2C acce/*(&Wire,0x19)*/;
+DFRobot_H3LIS200DL_I2C acce/*(&Wire,0x19)*/;
 
 //当你使用SPI通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_SPI构造对象
 #if defined(ESP32) || defined(ESP8266)
@@ -33,7 +33,8 @@
  * @param cs : Chip selection pinChip selection pin
  * @param spi :SPI controller
  */
-DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
+//DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
+
 //中断产生标志
 volatile int intFlag = 0;
 void interEvent(){
@@ -106,7 +107,7 @@ void setup(void){
     Set the threshold of interrupt source 1 interrupt
     threshold:Threshold(g)
    */
-  acce.setIntOneTh(/*Threshold = */6);//单位为:g
+  acce.setInt1Th(/*Threshold = */6);//单位为:g
 
   /**
    * @brief Enable interrupt
