@@ -39,7 +39,7 @@ To use this library, first download the library file, paste it into the \Arduino
 ## Methods
 
 ```python
-#include <DFRobot_H3LIS200DL.h>
+
   '''
     @brief Initialize the function
     @return Return 0 indicates a successful initialization, while other values indicates failure and return to error code.
