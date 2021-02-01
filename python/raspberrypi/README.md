@@ -43,13 +43,13 @@ To use this library, first download the library file, paste it into the \Arduino
     @brief Initialize the function
     @return Return 0 indicates a successful initialization, while other values indicates failure and return to error code.
   '''
-  def begin(self)
+  begin(self)
   
   '''
     @brief get chip id
     @return returns the 8 bit serial number
   '''
-  def get_id(self)
+  get_id(self)
 
   '''
     @brief Set the measurement range
@@ -57,7 +57,7 @@ To use this library, first download the library file, paste it into the \Arduino
                RANGE_100_G =0 # ±100g
                RANGE_200_G = 1# ±200g
   '''
-  def set_range(self,range_r)
+  set_range(self,range_r)
 
   '''
     @brief Set data measurement rate
@@ -73,20 +73,20 @@ To use this library, first download the library file, paste it into the \Arduino
                  NORMAL_400HZ = 8
                  NORMAL_1000HZ = 9
   '''
-  def set_acquire_rate(self, rate)
+  set_acquire_rate(self, rate)
 
 
   '''
     @brief Set the threshold of interrupt source 1 interrupt
     @param threshold:Threshold(g)
   '''
-  def set_int1_th(self,threshold)
+  set_int1_th(self,threshold)
 
   '''
     @brief Set interrupt source 2 interrupt generation threshold
     @param threshold:Threshold(g)
   '''
-  def set_int2_th(self,threshold)
+  set_int2_th(self,threshold)
   
   '''
     @brief Enable interrupt
@@ -102,7 +102,7 @@ To use this library, first download the library file, paste it into the \Arduino
                  Z_HIGHERTHAN_TH = 5<The acceleration in the z direction is greater than the threshold>
                  EVENT_ERROR = 6 <No event>
   '''
-  def enable_int_event(self,source,event)
+  enable_int_event(self,source,event)
 
   '''
     @brief Check whether the interrupt event'source' is generated in interrupt 1
@@ -117,7 +117,7 @@ To use this library, first download the library file, paste it into the \Arduino
     @return true ：produce
             false：Interrupt event
   '''
-  def get_int1_event(self,source)
+  get_int1_event(self,source)
          
   '''
     @brief Check whether the interrupt event'source' is generated in interrupt 2
@@ -132,13 +132,13 @@ To use this library, first download the library file, paste it into the \Arduino
     @return true ：produce
             false：Interrupt event
   '''
-  def get_int2_event(self,source)
+  get_int2_event(self,source)
 
   '''
     @brief Enable sleep wake function
     @param enable:True(enable)/False(disable)
   '''
-  def enable_sleep(self, enable)
+  enable_sleep(self, enable)
   
   '''
     @brief Set data filtering mode
@@ -161,7 +161,7 @@ To use this library, first download the library file, paste it into the \Arduino
     |  CUTOFF_MODE4  |    0.125        |         0.25         |            1         |             2.5       |
     |--------------------------------------------------------------------------------------------------------|
   '''
-  def set_filter_mode(self,mode)
+  set_filter_mode(self,mode)
 
   '''
     @brief Get the acceleration in the three directions of xyz
