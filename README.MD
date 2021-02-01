@@ -120,13 +120,13 @@ To use this library, first download the library file, paste it into the \Arduino
    * @brief Set the threshold of interrupt source 1 interrupt
    * @param threshold 范围是量程的范围(unit:g)
    */
-  void setIntOneTh(uint8_t threshold);
+  void setInt1Th(uint8_t threshold);
 
   /**
    * @brief Set interrupt source 2 interrupt generation threshold
    * @param threshold 范围是量程的范围(unit:g
    */
-  void setIntTwoTh(uint8_t threshold);
+  void setInt2Th(uint8_t threshold);
 
   /**
    * @brief Enable sleep wake function
