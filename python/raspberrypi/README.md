@@ -46,8 +46,8 @@ To use this library, first download the library file, paste it into the \Arduino
   def begin(self)
   
   '''
-    @brief Get chip id
-    @return Returns the 8 bit serial number
+    @brief get chip id
+    @return returns the 8 bit serial number
   '''
   def get_id(self)
 
