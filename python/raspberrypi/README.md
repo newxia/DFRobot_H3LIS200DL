@@ -167,7 +167,7 @@ To use this library, first download the library file, paste it into the \Arduino
     @brief Get the acceleration in the three directions of xyz
     @return Three-axis acceleration 
   '''
-  def read_acce_xyz(self)
+  read_acce_xyz(self)
 
 ```
 
