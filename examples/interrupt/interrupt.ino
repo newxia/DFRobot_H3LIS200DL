@@ -1,7 +1,7 @@
 /**！
  * @file interrupt.ino
- * @brief Enable some interrupt events in the sensor, and get
-   @n the interrupt signal through the interrupt pin
+ * @brief Enable  interrupt events in the sensor, and get
+   @n the interrupt signal through the interrupt pin 1/2
  * @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [fengli](li.feng@dfrobot.com)
@@ -22,7 +22,7 @@
 
 //当你使用SPI通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_SPI构造对象
 #if defined(ESP32) || defined(ESP8266)
-#define H3LIS200DL_CS  D5
+#define H3LIS200DL_CS  D3
 
 /* AVR series mainboard */
 #else
@@ -34,9 +34,10 @@
  * @param spi :SPI controller
  */
 DFRobot_H3LIS200DL_SPI acce(/*cs = */H3LIS200DL_CS);
-volatile int Flag = 0;
+//中断产生标志
+volatile int intFlag = 0;
 void interEvent(){
-  Flag = 1;
+  intFlag = 1;
 }
 
 void setup(void){
@@ -53,14 +54,14 @@ void setup(void){
   
   /**
     set range:Range(g)
-              eOnehundred ,/<±100g>/
-              eTwohundred ,/<±200g>/
+              e100_g ,/<±100g>/
+              e200_g ,/<±200g>/
   */
-  acce.setRange(/*Range = */DFRobot_H3LIS200DL::eOnehundred);
+  acce.setRange(/*Range = */DFRobot_H3LIS200DL::e100_g);
 
   /**
     Set data measurement rate：
-      ePowerDown = 0,
+      ePowerDown_0HZ = 0,
       eLowPower_halfHZ,
       eLowPower_1HZ,
       eLowPower_2HZ,
@@ -73,7 +74,7 @@ void setup(void){
   */
   acce.setAcquireRate(/*Rate = */DFRobot_H3LIS200DL::eNormal_50HZ);
   #if defined(ESP32) || defined(ESP8266)||defined(ARDUINO_SAM_ZERO)
-  attachInterrupt(digitalPinToInterrupt(D4)/*Query the interrupt number of the D4 pin*/,interEvent,CHANGE);
+  attachInterrupt(digitalPinToInterrupt(D6)/*Query the interrupt number of the D4 pin*/,interEvent,CHANGE);
   #else
   /*    The Correspondence Table of AVR Series Arduino Interrupt Pins And Terminal Numbers
    * ---------------------------------------------------------------------------------------
@@ -105,7 +106,7 @@ void setup(void){
     Set the threshold of interrupt source 1 interrupt
     threshold:Threshold(g)
    */
-  acce.setIntOneTh(/*Threshold = */10);//单位为:g
+  acce.setIntOneTh(/*Threshold = */6);//单位为:g
 
   /**
    * @brief Enable interrupt
@@ -127,18 +128,16 @@ void setup(void){
 
 void loop(void){
     //Get the acceleration in the three directions of xyz
-    DFRobot_H3LIS200DL::sAccel_t accel = acce.getAcceFromXYZ();
     Serial.print("Acceleration x: "); //print acceleration
-    Serial.print(accel.acceleration_x);
+    Serial.print(acce.readAccX());
     Serial.print(" g \ty: ");
-    Serial.print(accel.acceleration_y);
+    Serial.print(acce.readAccY());
     Serial.print(" g \tz: ");
-    Serial.print(accel.acceleration_z);
+    Serial.print(acce.readAccZ());
     Serial.println(" g");
-    delay(100);  
+    delay(300);
    //The interrupt flag is set
-   if(Flag == 1){
-      Serial.println("Flag = 1");
+   if(intFlag == 1){
       //Check whether the interrupt event'source' is generated in interrupt 1
       if(acce.getInt1Event(DFRobot_H3LIS200DL::eYhigherThanTh)){
         Serial.println("The acceleration in the y direction is greater than the threshold");
@@ -149,6 +148,6 @@ void loop(void){
       if(acce.getInt1Event(DFRobot_H3LIS200DL::eXhigherThanTh)){
         Serial.println("The acceleration in the x direction is greater than the threshold");
       }
-      Flag = 0;
+      intFlag = 0;
    }
 }

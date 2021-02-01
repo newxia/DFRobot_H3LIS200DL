@@ -17,9 +17,9 @@ int DFRobot_H3LIS200DL::begin(void){
 
 
   uint8_t identifier = 0; 
-  uint8_t regester = H3LIS200DL_REG_CARD_ID;
+  uint8_t regester = REG_CARD_ID;
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_CARD_ID | 0x80;
+    regester  = REG_CARD_ID | 0x80;
   }
   readReg(regester,&identifier,1);
   DBG(identifier);
@@ -37,31 +37,31 @@ int DFRobot_H3LIS200DL::begin(void){
 
 uint8_t DFRobot_H3LIS200DL::getID(){
   uint8_t identifier; 
-  uint8_t regester = H3LIS200DL_REG_CARD_ID;
+  uint8_t regester = REG_CARD_ID;
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_CARD_ID | 0x80;
+    regester  = REG_CARD_ID | 0x80;
   }
   readReg(regester,&identifier,1);
   return identifier;
 }
 void DFRobot_H3LIS200DL::setRange(eRange_t range){
   uint8_t reg = 0;
-  uint8_t regester = H3LIS200DL_REG_CTRL_REG4;
+  uint8_t regester = REG_CTRL_REG4;
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_CTRL_REG4 | 0x80;
+    regester  = REG_CTRL_REG4 | 0x80;
   }
   readReg(regester,&reg,1);
-  if(range == eOnehundred){
+  if(range == e100_g){
     reg = reg & (~0x10);
     _range = 100;
-  } else if(range == eTwohundred){
+  } else if(range == e200_g){
     reg = reg | 0x10;
     _range = 200;
   } else {
     reg = reg & (~0x10);
   }
   DBG(reg);
-  writeReg(H3LIS200DL_REG_CTRL_REG4,&reg,1);
+  writeReg(REG_CTRL_REG4,&reg,1);
 }
 
 
@@ -70,13 +70,13 @@ void DFRobot_H3LIS200DL::setAcquireRate(ePowerMode_t rate)
 {
   uint8_t reg = 0;
 
-  uint8_t regester = H3LIS200DL_REG_CTRL_REG1;
+  uint8_t regester = REG_CTRL_REG1;
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_CTRL_REG1 | 0x80;
+    regester  = REG_CTRL_REG1 | 0x80;
   }
   readReg(regester,&reg,1);
   switch(rate){
-    case ePowerDown : {
+    case ePowerDown_0HZ : {
      reg = reg & (~(0x7 << 5));
      break;
     }
@@ -134,29 +134,29 @@ void DFRobot_H3LIS200DL::setAcquireRate(ePowerMode_t rate)
     }
   }
   DBG(reg);
-  writeReg(H3LIS200DL_REG_CTRL_REG1,&reg,1);
+  writeReg(REG_CTRL_REG1,&reg,1);
 }
 void DFRobot_H3LIS200DL::setIntOneTh(uint8_t threshold)
 {
     uint8_t reg = (threshold * 128)/_range;
     DBG(reg);
-    writeReg(H3LIS200DL_REG_INT1_THS,&reg,1);
+    writeReg(REG_INT1_THS,&reg,1);
 }
 void DFRobot_H3LIS200DL::setIntTwoTh(uint8_t threshold)
 {
     uint8_t reg = (threshold * 128)/_range;
     DBG(reg);
-    writeReg(H3LIS200DL_REG_INT2_THS,&reg,1);
+    writeReg(REG_INT2_THS,&reg,1);
 }
 void DFRobot_H3LIS200DL::enableInterruptEvent(eInterruptSource_t source,eInterruptEvent_t event)
 {
   uint8_t reg = 0;
 
-  uint8_t regester1 = H3LIS200DL_REG_INT1_CFG;
-  uint8_t regester2 = H3LIS200DL_REG_INT2_CFG;
+  uint8_t regester1 = REG_INT1_CFG;
+  uint8_t regester2 = REG_INT2_CFG;
   if(_interface == 1){
-    regester1  = H3LIS200DL_REG_INT1_CFG | 0x80;
-    regester2  = H3LIS200DL_REG_INT2_CFG | 0x80;
+    regester1  = REG_INT1_CFG | 0x80;
+    regester2  = REG_INT2_CFG | 0x80;
   }
 
   if(source == eINT1)
@@ -200,19 +200,19 @@ void DFRobot_H3LIS200DL::enableInterruptEvent(eInterruptSource_t source,eInterru
   }
   DBG(reg);
   if(source == eINT1)
-    writeReg(H3LIS200DL_REG_INT1_CFG,&reg,1);
+    writeReg(REG_INT1_CFG,&reg,1);
   else
-    writeReg(H3LIS200DL_REG_INT2_CFG,&reg,1);
+    writeReg(REG_INT2_CFG,&reg,1);
  
  
 }
 bool DFRobot_H3LIS200DL::getInt1Event(eInterruptEvent_t source)
 {
   uint8_t reg = 0;
-  uint8_t regester = H3LIS200DL_REG_INT1_SRC;
+  uint8_t regester = REG_INT1_SRC;
   
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_INT1_SRC | 0x80;
+    regester  = REG_INT1_SRC | 0x80;
   }
   readReg(regester,&reg,1);
 
@@ -223,9 +223,9 @@ bool DFRobot_H3LIS200DL::getInt1Event(eInterruptEvent_t source)
 bool DFRobot_H3LIS200DL::getInt2Event(eInterruptEvent_t source)
 {
   uint8_t reg = 0;
-  uint8_t regester = H3LIS200DL_REG_INT2_SRC;
+  uint8_t regester = REG_INT2_SRC;
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_INT2_SRC | 0x80;
+    regester  = REG_INT2_SRC | 0x80;
   }
   readReg(regester,&reg,1);
   DBG(reg);
@@ -269,11 +269,11 @@ int DFRobot_H3LIS200DL::enableSleep(bool enable)
     reg = 3;
   else
     reg = 0;
-  writeReg(H3LIS200DL_REG_CTRL_REG5,&reg,1);
+  writeReg(REG_CTRL_REG5,&reg,1);
 
-  uint8_t regester = H3LIS200DL_REG_CTRL_REG5;
+  uint8_t regester = REG_CTRL_REG5;
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_CTRL_REG5 | 0x80;
+    regester  = REG_CTRL_REG5 | 0x80;
   }
   readReg(regester,&readRe,1);
   
@@ -285,9 +285,9 @@ int DFRobot_H3LIS200DL::enableSleep(bool enable)
 void DFRobot_H3LIS200DL::setHFilterMode(eHighPassFilter_t mode){
 
   uint8_t reg = 0;
-  uint8_t regester = H3LIS200DL_REG_CTRL_REG2;
+  uint8_t regester = REG_CTRL_REG2;
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_CTRL_REG2 | 0x80;
+    regester  = REG_CTRL_REG2 | 0x80;
   }
   readReg(regester,&reg,1);
   if(mode == eShutDown){
@@ -299,26 +299,26 @@ void DFRobot_H3LIS200DL::setHFilterMode(eHighPassFilter_t mode){
   reg = reg & (~3);
   reg = reg | (uint8_t)mode;
   DBG(reg);
-  writeReg(H3LIS200DL_REG_CTRL_REG2,&reg,1);
+  writeReg(REG_CTRL_REG2,&reg,1);
 }
 
 
 void DFRobot_H3LIS200DL::enableXYZ(){
   uint8_t reg = 0;
-  readReg(H3LIS200DL_REG_CTRL_REG1,&reg,1);
+  readReg(REG_CTRL_REG1,&reg,1);
   reg = reg | 0x07;
   DBG(reg);
-  writeReg(H3LIS200DL_REG_CTRL_REG1,&reg,1);
+  writeReg(REG_CTRL_REG1,&reg,1);
 }
 
 
 float DFRobot_H3LIS200DL::readAccX(){
   uint8_t reg = 0;
   uint8_t ACCX = 0;
-  readReg(H3LIS200DL_REG_STATUS_REG,&reg,1);
+  readReg(REG_STATUS_REG,&reg,1);
   DBG(reg);
   if((reg & 0x01) == 1){
-     readReg(H3LIS200DL_REG_OUT_X,&ACCX,1);
+     readReg(REG_OUT_X,&ACCX,1);
      float a = ((int8_t)ACCX *_range)/128;
      return a;
   } else{
@@ -329,10 +329,10 @@ float DFRobot_H3LIS200DL::readAccX(){
 float DFRobot_H3LIS200DL::readAccY(){
   uint8_t reg = 0;
   uint8_t ACCY = 0;
-  readReg(H3LIS200DL_REG_STATUS_REG,&reg,1);
+  readReg(REG_STATUS_REG,&reg,1);
   DBG(reg);
   if((reg & 0x02) == 2){
-     readReg(H3LIS200DL_REG_OUT_Y,&ACCY,1);
+     readReg(REG_OUT_Y,&ACCY,1);
      float a = ((int8_t)ACCY *_range)/128;
      return a;
   } else{
@@ -342,9 +342,9 @@ float DFRobot_H3LIS200DL::readAccY(){
 float DFRobot_H3LIS200DL::readAccZ(){
   uint8_t reg = 0;
   uint8_t ACCZ = 0;
-  readReg(H3LIS200DL_REG_STATUS_REG,&reg,1);
+  readReg(REG_STATUS_REG,&reg,1);
   if((reg & 0x04) == 4){
-     readReg(H3LIS200DL_REG_OUT_Z,&ACCZ,1);
+     readReg(REG_OUT_Z,&ACCZ,1);
      float a = ((int8_t)ACCZ *_range)/128;
      return a;
   } else{
@@ -359,20 +359,20 @@ DFRobot_H3LIS200DL::sAccel_t DFRobot_H3LIS200DL::getAcceFromXYZ()
   uint8_t sensorData[3];
   sAccel_t accel;
   uint8_t offset = 0x0;
-  uint8_t regester = H3LIS200DL_REG_STATUS_REG;
+  uint8_t regester = REG_STATUS_REG;
   if(_interface == 1){
-    regester  = H3LIS200DL_REG_STATUS_REG | 0x80;
+    regester  = REG_STATUS_REG | 0x80;
   }
   readReg(regester,&reg,1);
   if((reg & 0x01) > 1){
      if(_interface == 1){
 		 offset = 0x80;
      }
-     readReg(H3LIS200DL_REG_OUT_X+offset,&sensorData[0],1);
+     readReg(REG_OUT_X+offset,&sensorData[0],1);
 
-     readReg(H3LIS200DL_REG_OUT_Y+offset,&sensorData[1],1);
+     readReg(REG_OUT_Y+offset,&sensorData[1],1);
 
-     readReg(H3LIS200DL_REG_OUT_Z+offset,&sensorData[2],1);
+     readReg(REG_OUT_Z+offset,&sensorData[2],1);
 
 
      float a = ((int8_t)sensorData[0]*_range)/128;
@@ -419,7 +419,7 @@ uint8_t DFRobot_H3LIS200DL_I2C::writeReg(uint8_t reg, const void * pBuf, size_t 
   _pWire->endTransmission();
 }
 
-uint8_t DFRobot_H3LIS200DL_I2C::readReg(uint8_t reg, uint8_t* pBuf, size_t size)
+uint8_t DFRobot_H3LIS200DL_I2C::readReg(uint8_t reg, void* pBuf, size_t size)
 {
   if(pBuf == NULL){
     DBG("pBuf ERROR!! : null pointer");
@@ -463,13 +463,17 @@ int DFRobot_H3LIS200DL_SPI::begin(void){
   _interface = 1;
   return DFRobot_H3LIS200DL::begin();
 }
-uint8_t DFRobot_H3LIS200DL_SPI::readReg(uint8_t reg,uint8_t * pBuf ,size_t size){
+uint8_t DFRobot_H3LIS200DL_SPI::readReg(uint8_t reg,void * pBuf ,size_t size){
   if(pBuf == NULL){
 	  DBG("pBuf ERROR!! : null pointer");
   }
   uint8_t * _pBuf = (uint8_t *)pBuf;
   size_t count = 0;
+#if (defined NRF5)
+  _pSpi->beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE1));
+#else
   _pSpi->beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+#endif
   digitalWrite(_cs,0);
   _pSpi->transfer(reg);
   while(size--) {
@@ -497,6 +501,6 @@ uint8_t  DFRobot_H3LIS200DL_SPI::writeReg(uint8_t reg,const void *pBuf,size_t si
     _pBuf ++;
   }
 
-  //SPI.endTransaction();
+  SPI.endTransaction();
   digitalWrite(_cs,1);
 }

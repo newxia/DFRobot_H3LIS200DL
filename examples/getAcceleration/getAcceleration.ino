@@ -23,7 +23,7 @@
 
 //当你使用SPI通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_SPI构造对象
 #if defined(ESP32) || defined(ESP8266)
-#define H3LIS200DL_CS  D5
+#define H3LIS200DL_CS  D3
 
 /* AVR series mainboard */
 #else
@@ -52,14 +52,14 @@ void setup(void){
   
   /**
     set range:Range(g)
-          eOnehundred ,/<±100g>/
-          eTwohundred ,/<±200g>/
+          e100_g ,/<±100g>/
+          e200_g ,/<±200g>/
   */
-  acce.setRange(/*Range = */DFRobot_H3LIS200DL::eOnehundred);
+  acce.setRange(/*Range = */DFRobot_H3LIS200DL::e100_g);
 
   /**
     Set data measurement rate：
-      ePowerDown = 0,
+      ePowerDown_0HZ = 0,
       eLowPower_halfHZ,
       eLowPower_1HZ,
       eLowPower_2HZ,

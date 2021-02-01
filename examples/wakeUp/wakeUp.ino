@@ -1,7 +1,8 @@
 /**！
  * @file wakeUp.ino
- * @brief Use sleep wakeup function
-   @n when the sensor is in low power consumption mode, when an interrupt is generated, the sensor will work in normal mode
+ * @brief 使用睡眠唤醒功能
+   @n 现象：使用此功能需要先让模块处于低功耗模式,此时的测量速率会很慢
+   @n 当有设置好的中断事件产生,模块会进入正常模式,从而测量速率加快
  * @copyright  Copyright (c) 2010 DFRobot Co.Ltd (http://www.dfrobot.com)
  * @licence     The MIT License (MIT)
  * @author [fengli](li.feng@dfrobot.com)
@@ -23,7 +24,7 @@
 
 //当你使用SPI通信时,使用下面这段程序,使用DFRobot_H3LIS200DL_SPI构造对象
 #if defined(ESP32) || defined(ESP8266)
-#define H3LIS200DL_CS  D5
+#define H3LIS200DL_CS  D3
 
 /* AVR series mainboard */
 #else
@@ -49,16 +50,16 @@ void setup(void){
   
   /**
     set range:Range(g)
-              eOnehundred ,/<±100g>/
-              eTwohundred ,/<±200g>/
+              e100_g ,/<±100g>/
+              e200_g ,/<±200g>/
   */
-  acce.setRange(/*Range = */DFRobot_H3LIS200DL::eOnehundred);
+  acce.setRange(/*Range = */DFRobot_H3LIS200DL::e100_g);
 
   /**
    “sleep to wake-up”  need to put the chip in low power mode first
    Set data measurement rate：
    
-      ePowerDown = 0,
+      ePowerDown_0HZ = 0,
       eLowPower_halfHZ,
       eLowPower_1HZ,
       eLowPower_2HZ,
@@ -99,15 +100,12 @@ void setup(void){
 
 void loop(void){
     //Get the acceleration in the three directions of xyz
-    //
-    DFRobot_H3LIS200DL::sAccel_t accel = acce.getAcceFromXYZ();
     Serial.print("Acceleration x: "); //print acceleration
-    Serial.print(accel.acceleration_x);
+    Serial.print(acce.readAccX());
     Serial.print(" g \ty: ");
-    Serial.print(accel.acceleration_y);
+    Serial.print(acce.readAccY());
     Serial.print(" g \tz: ");
-    Serial.print(accel.acceleration_z);
+    Serial.print(acce.readAccZ());
     Serial.println(" g");
-    delay(100);  
-
+    delay(300);
 }

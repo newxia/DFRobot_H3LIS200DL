@@ -36,23 +36,23 @@
 
 class DFRobot_H3LIS200DL
 {
-  #define H3LIS200DL_REG_CARD_ID    0x0F     /*Chip id*/
-  #define H3LIS200DL_REG_CTRL_REG1  0x20     /*Control register 1*/
-  #define H3LIS200DL_REG_CTRL_REG4  0x23     /*Control register 4*/
-  #define H3LIS200DL_REG_CTRL_REG2  0x21     /*Control register 2*/
-  #define H3LIS200DL_REG_CTRL_REG3  0x22     /*Control register 3*/
-  #define H3LIS200DL_REG_CTRL_REG5  0x24     /*Control register 5*/
-  #define H3LIS200DL_REG_CTRL_REG6  0x25     /*Control register 6*/
-  #define H3LIS200DL_REG_STATUS_REG 0x27     /*Status register*/
-  #define H3LIS200DL_REG_OUT_X      0x29     /*Acceleration register*/
-  #define H3LIS200DL_REG_OUT_Y      0x2B     /*Acceleration register*/
-  #define H3LIS200DL_REG_OUT_Z      0x2D     /*Acceleration register*/
-  #define H3LIS200DL_REG_INT1_THS   0x32     /*Interrupt source 1 threshold*/
-  #define H3LIS200DL_REG_INT2_THS   0x36     /*Interrupt source 2 threshold*/
-  #define H3LIS200DL_REG_INT1_CFG   0x30     /*Interrupt source 1 configuration register*/
-  #define H3LIS200DL_REG_INT2_CFG   0x34     /*Interrupt source 2 configuration register*/
-  #define H3LIS200DL_REG_INT1_SRC   0x31     /*Interrupt source 1 status register*/
-  #define H3LIS200DL_REG_INT2_SRC   0x35     /*Interrupt source 2 status register*/
+  #define REG_CARD_ID    0x0F     /*Chip id*/
+  #define REG_CTRL_REG1  0x20     /*Control register 1*/
+  #define REG_CTRL_REG4  0x23     /*Control register 4*/
+  #define REG_CTRL_REG2  0x21     /*Control register 2*/
+  #define REG_CTRL_REG3  0x22     /*Control register 3*/
+  #define REG_CTRL_REG5  0x24     /*Control register 5*/
+  #define REG_CTRL_REG6  0x25     /*Control register 6*/
+  #define REG_STATUS_REG 0x27     /*Status register*/
+  #define REG_OUT_X      0x29     /*Acceleration register*/
+  #define REG_OUT_Y      0x2B     /*Acceleration register*/
+  #define REG_OUT_Z      0x2D     /*Acceleration register*/
+  #define REG_INT1_THS   0x32     /*Interrupt source 1 threshold*/
+  #define REG_INT2_THS   0x36     /*Interrupt source 2 threshold*/
+  #define REG_INT1_CFG   0x30     /*Interrupt source 1 configuration register*/
+  #define REG_INT2_CFG   0x34     /*Interrupt source 2 configuration register*/
+  #define REG_INT1_SRC   0x31     /*Interrupt source 1 status register*/
+  #define REG_INT2_SRC   0x35     /*Interrupt source 2 status register*/
 
 public:
 
@@ -61,7 +61,7 @@ public:
   Represents the number of data collected per second
 */
 typedef enum{
-   ePowerDown = 0,/*0.5 hz*/
+   ePowerDown_0HZ = 0,/*测量关闭*/
    eLowPower_halfHZ,/*0.5 hz*/
    eLowPower_1HZ,
    eLowPower_2HZ,
@@ -77,8 +77,8 @@ typedef enum{
   Sensor range selection
 */
 typedef enum{
-  eOnehundred,/**< ±100g>*/
-  eTwohundred/**< ±200g>*/
+  e100_g,/**< ±100g>*/
+  e200_g/**< ±200g>*/
 }eRange_t;
 
 /*!     High-pass filter cut-off frequency configuration
@@ -150,22 +150,40 @@ public:
   
   /**
    * @brief Enable interrupt
-   * @param source:Interrupt pin selection
+   * @ source:Interrupt pin selection
+              eINT1 = 0,/<int1 >/
+              eINT2,/<int2>/
    * @param event:Interrupt event selection
+                   eXLowThanTh = 0,/<The acceleration in the x direction is less than the threshold>/
+                   eXhigherThanTh ,/<The acceleration in the x direction is greater than the threshold>/
+                   eYLowThanTh,/<The acceleration in the y direction is less than the threshold>/
+                   eYhigherThanTh,/<The acceleration in the y direction is greater than the threshold>/
+                   eZLowThanTh,/<The acceleration in the z direction is less than the threshold>/
+                   eZhigherThanTh,/<The acceleration in the z direction is greater than the threshold>/
    */
   void enableInterruptEvent(eInterruptSource_t source, eInterruptEvent_t event);
   
   /**
    * @brief Set the measurement range
    * @param range:Range(g)
-            eOnehundred =  ±100g
-            eTwohundred = ±200g
+            e100_g =  ±100g
+            e200_g = ±200g
    */
   void setRange(eRange_t range);
   
   /**
    * @brief Set data measurement rate
    * @param range:rate
+                  ePowerDown_0HZ = 0,测量关闭
+                  eLowPower_halfHZ,0.5 hz
+                  eLowPower_1HZ,
+                  eLowPower_2HZ,
+                  eLowPower_5HZ,
+                  eLowPower_10HZ,
+                  eNormal_50HZ,
+                  eNormal_100HZ,
+                  eNormal_400HZ,
+                  eNormal_1000HZ,
    */
   void setAcquireRate(ePowerMode_t rate);
   
@@ -275,7 +293,7 @@ protected:
   uint8_t _range = 100;
 
 
-  virtual uint8_t readReg(uint8_t reg,uint8_t * pBuf ,size_t size) = 0;
+  virtual uint8_t readReg(uint8_t reg,void * pBuf ,size_t size) = 0;
   /**
    * @brief Write command into sensor chip 
    * @param reg  
@@ -312,7 +330,7 @@ private:
    * @param data  Data included in command
    * @param size  The number of the byte of command
    */
-    uint8_t readReg(uint8_t reg,uint8_t * pBuf ,size_t size);
+    uint8_t readReg(uint8_t reg,void * pBuf ,size_t size);
   /**
    * @brief Write command into sensor chip 
    * @param reg  
@@ -346,7 +364,7 @@ protected:
    * @param data  Data included in command
    * @param size  The number of the byte of command
    */
-    uint8_t readReg(uint8_t reg,uint8_t * pBuf ,size_t size);
+    uint8_t readReg(uint8_t reg,void * pBuf ,size_t size);
   /**
    * @brief Write command into sensor chip 
    * @param reg  
