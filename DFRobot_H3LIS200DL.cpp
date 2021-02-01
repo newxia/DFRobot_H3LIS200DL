@@ -315,10 +315,14 @@ void DFRobot_H3LIS200DL::enableXYZ(){
 float DFRobot_H3LIS200DL::readAccX(){
   uint8_t reg = 0;
   uint8_t ACCX = 0;
-  readReg(REG_STATUS_REG,&reg,1);
+  uint8_t offset = 0x0;
+  if(_interface == 1){
+    offset = 0x80;
+     }
+  readReg(REG_STATUS_REG+offset,&reg,1);
   DBG(reg);
   if((reg & 0x01) == 1){
-     readReg(REG_OUT_X,&ACCX,1);
+     readReg(REG_OUT_X+offset,&ACCX,1);
      float a = ((int8_t)ACCX *_range)/128;
      return a;
   } else{
@@ -329,10 +333,14 @@ float DFRobot_H3LIS200DL::readAccX(){
 float DFRobot_H3LIS200DL::readAccY(){
   uint8_t reg = 0;
   uint8_t ACCY = 0;
-  readReg(REG_STATUS_REG,&reg,1);
+  uint8_t offset = 0x0;
+  if(_interface == 1){
+    offset = 0x80;
+     }
+  readReg(REG_STATUS_REG+offset,&reg,1);
   DBG(reg);
   if((reg & 0x02) == 2){
-     readReg(REG_OUT_Y,&ACCY,1);
+     readReg(REG_OUT_Y+offset,&ACCY,1);
      float a = ((int8_t)ACCY *_range)/128;
      return a;
   } else{
@@ -342,9 +350,14 @@ float DFRobot_H3LIS200DL::readAccY(){
 float DFRobot_H3LIS200DL::readAccZ(){
   uint8_t reg = 0;
   uint8_t ACCZ = 0;
-  readReg(REG_STATUS_REG,&reg,1);
+  uint8_t offset = 0x0;
+  if(_interface == 1){
+    offset = 0x80;
+     }
+  readReg(REG_STATUS_REG+offset,&reg,1);
+
   if((reg & 0x04) == 4){
-     readReg(REG_OUT_Z,&ACCZ,1);
+     readReg(REG_OUT_Z+offset,&ACCZ,1);
      float a = ((int8_t)ACCZ *_range)/128;
      return a;
   } else{
@@ -364,7 +377,7 @@ DFRobot_H3LIS200DL::sAccel_t DFRobot_H3LIS200DL::getAcceFromXYZ()
     regester  = REG_STATUS_REG | 0x80;
   }
   readReg(regester,&reg,1);
-  if((reg & 0x01) > 1){
+  if((reg & 0x01) == 1){
      if(_interface == 1){
 		 offset = 0x80;
      }
